@@ -1,5 +1,15 @@
 package com.example.zstd.microblog.service;
 
+import com.example.zstd.microblog.dto.RegistrationData;
+import com.example.zstd.microblog.exception.RegistrationException;
+import com.example.zstd.microblog.exception.RepositoryException;
+import com.example.zstd.microblog.model.User;
+import com.example.zstd.microblog.repository.UserRepo;
+import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
+import com.google.common.base.Strings;
+
+import java.util.List;
+
 public class RegistrationService {
 	
 	public static final String MAIN_ROLE = "CHAT_USER";
@@ -8,7 +18,8 @@ public class RegistrationService {
 	private static final String DUPLICATE_NICKNAME_ERROR_TEMPLATE = "Blog user with nickname '%s' already exists";
 	
 	//private UserRoleRepo userRoleRepo = new JdbcUserRoleRepo();
-	//private UserRepo userRepo = new JdbcUserRepo();
+
+    private UserRepo userRepo = new JdbcUserRepo();
 	
 	/**
 	 * Creates blog user from registration data
@@ -51,29 +62,28 @@ public class RegistrationService {
 //		}
 //	}
 
-//	private BlogUser createFromRegistrationData(RegistrationData data) {
-//		BlogUser blogUser = new BlogUser();
-//		blogUser.setUsername(data.getUsername());
-//		blogUser.setNickname(data.getNickname());
-//		blogUser.setPassword(data.getPassword());
-//		blogUser.setDescription(data.getDescription());
-//		blogUser.setPhotoUrl(data.getPhotoUrl());
-//		return blogUser;
-//	}
+	private User createFromRegistrationData(RegistrationData data) {
+		User blogUser = new User();
+		blogUser.setUsername(data.getUsername());
+		blogUser.setNickname(data.getNickname());
+		blogUser.setPassword(data.getPassword());
+		blogUser.setDescription(data.getDescription());
+		blogUser.setPhotoUrl(data.getPhotoUrl());
+		return blogUser;
+	}
 //
-//	private void checkUsernameExists(RegistrationData data) throws RegistrationException {
-//		List<BlogUser> blogUser = null;
-//		if(!StringUtils.isNullOrEmpty(data.getUsername())) {
-//			try {
-//				blogUser = userRepo.findByField(BlogUser.DB_FIELD_USERNAME, data.getUsername());
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				throw new RuntimeException(e.getMessage());
-//			}
-//		}
-//		if(blogUser != null && !blogUser.isEmpty()) {
-//			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
-//		}
-//	}
+	private void checkUsernameExists(RegistrationData data) throws RegistrationException {
+		List<User> blogUser = null;
+		if(!Strings.isNullOrEmpty(data.getUsername())) {
+			try {
+				blogUser = userRepo.findByField(User.DB_FIELD_USERNAME, data.getUsername());
+			} catch (RepositoryException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+		if(blogUser != null && !blogUser.isEmpty()) {
+			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
+		}
+	}
 
 }
