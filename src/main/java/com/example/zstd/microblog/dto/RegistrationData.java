@@ -18,7 +18,7 @@ public class RegistrationData {
 	/**
 	 * Main constructor with all fields provided.	 
 	 */
-    RegistrationData(String username, String nickname, String password,
+    public RegistrationData(String username, String nickname, String password,
                      String passwordCheck, String description, String photoUrl) {
 		super();
 		this.username = username;

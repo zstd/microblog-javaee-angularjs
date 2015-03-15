@@ -5,7 +5,7 @@ import com.example.zstd.microblog.exception.RegistrationException;
 import com.example.zstd.microblog.exception.RepositoryException;
 import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.UserRepo;
-import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
+import com.example.zstd.microblog.repository.UserRoleRepo;
 import com.google.common.base.Strings;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public class RegistrationService {
 	private static final String DUPLICATE_USERNAME_ERROR_TEMPLATE = "Blog user with username '%s' already exists";
 	private static final String DUPLICATE_NICKNAME_ERROR_TEMPLATE = "Blog user with nickname '%s' already exists";
 	
-	//private UserRoleRepo userRoleRepo = new JdbcUserRoleRepo();
+	private UserRoleRepo userRoleRepo;
 
-    private UserRepo userRepo = new JdbcUserRepo();
+    private UserRepo userRepo;
 	
 	/**
 	 * Creates blog user from registration data
@@ -27,40 +27,35 @@ public class RegistrationService {
 	 * @return newly created blog user
 	 * @throws RegistrationException 
 	 */
-//	public BlogUser create(RegistrationData data) throws RegistrationException {
-//		checkUsernameExists(data);
-//		checkNickNameExists(data);
-//
-//		BlogUser newUser = createFromRegistrationData(data);
-//		try {
-//			userRepo.save(newUser);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			throw new RegistrationException("Failed to create user " + newUser);
-//		}
-//		try {
-//			userRoleRepo.add(newUser.getUsername(), MAIN_ROLE);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			throw new RegistrationException("Failed to create user ROLE " + newUser);
-//		}
-//		return newUser;
-//	}
+	public User create(RegistrationData data) throws RegistrationException {
+		checkUsernameExists(data);
+		checkNickNameExists(data);
 
-//	private void checkNickNameExists(RegistrationData data) throws RegistrationException {
-//		List<BlogUser> blogUser = null;
-//		if(!StringUtils.isNullOrEmpty(data.getNickname())) {
-//			try {
-//				blogUser = userRepo.findByField(BlogUser.DB_FIELD_NICKNAME, data.getNickname());
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				throw new RuntimeException(e.getMessage());
-//			}
-//		}
-//		if(blogUser != null && !blogUser.isEmpty()) {
-//			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
-//		}
-//	}
+		User newUser = createFromRegistrationData(data);
+		try {
+			userRepo.save(newUser);
+		} catch (RepositoryException e) {
+			throw new RegistrationException("Failed to create user " + newUser);
+		}
+		try {
+			userRoleRepo.add(newUser.getUsername(), MAIN_ROLE);
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+			throw new RegistrationException("Failed to create user ROLE " + newUser);
+		}
+		return newUser;
+	}
+
+	private void checkNickNameExists(RegistrationData data) throws RegistrationException {
+		List<User> blogUser = null;
+		if(!Strings.isNullOrEmpty(data.getNickname())) {
+			blogUser = userRepo.findByField(User.DB_FIELD_NICKNAME, data.getNickname());
+
+		}
+		if(blogUser != null && !blogUser.isEmpty()) {
+			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
+		}
+	}
 
 	private User createFromRegistrationData(RegistrationData data) {
 		User blogUser = new User();
@@ -86,4 +81,11 @@ public class RegistrationService {
 		}
 	}
 
+    public void setUserRepo(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    public void setUserRoleRepo(UserRoleRepo userRoleRepo) {
+        this.userRoleRepo = userRoleRepo;
+    }
 }
