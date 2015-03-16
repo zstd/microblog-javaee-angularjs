@@ -1,0 +1,15 @@
+<div class="follow-data-list">
+  <div class="follow-info" ng-repeat="userFollowData in followData.followData">
+    <span class="author">
+	    	<a ng-href="/user.html?user={{userFollowData.username}}">@{{userFollowData.username}}</a>
+    </span>
+    <span class="follow-button" ng-class="{hidden: followData.isShowFollowButton(userFollowData.username) == false}" >
+    	<button type="button" class="btn btn-xs btn-success" 
+    	ng-click="followData.submitFollowAction(userFollowData.username)" >Follow</button>
+  	</span>
+  	<span class="follow-button" ng-class="{hidden: followData.isShowUnfollowButton(userFollowData.username) == false}">
+    	<button type="button" class="btn btn-xs btn-default" 
+    	ng-click="followData.submitUnfollowAction(userFollowData.username)" >Unfollow</button>
+  	</span>    
+  </div>
+</div>

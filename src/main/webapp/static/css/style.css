@@ -1,0 +1,116 @@
+.header .welcome {
+  margin-top: 18px;
+}
+
+.feed-list .post {
+  border: 1px #ccc solid;
+  padding: 10px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;  
+}
+
+.feed-list .post .header .author {
+  font-weight: bold;
+  font-size: large;
+}
+
+.feed-list .post .header .controls .btn{
+  margin-bottom: 5px;
+}
+
+.feed-list .post .header .published {
+  	color: gray;
+    float: right;
+    font-size: 12px;
+    padding-top: 3px;
+}
+
+.feed-list .post .header {
+  border-bottom: 1px #ccc solid;
+  margin-bottom: 10px;
+}
+
+.feed-list .post .footer {
+  margin-top: 10px;
+}
+
+.feed .load-more-btn {
+  padding: 10px 0;
+}
+
+a.topic {
+	color: green;
+}
+
+.user_toolbar {
+   margin-bottom: 5px;
+}
+
+.profile_info {
+   border: 1px #ccc solid;
+   border-radius: 5px;
+   margin-bottom: 5px;
+   padding: 5px;
+   display: block;
+}
+
+.profile_info span {
+   display: inline-block;
+   vertical-align: top;
+}
+
+.profile_info .profile_foto img {
+   width: 125px;
+   height: 125px;
+}
+
+.profile_data .descr_title {
+   font-weight: bold;
+}
+
+.profile_data .descr_value {
+   color: gray;
+   padding-left: 20px;
+}
+
+div.follow-data-list > div {
+   border: 1px #ccc solid;
+   border-radius: 5px;
+   margin-bottom: 5px;
+   padding: 5px;
+   display: block;
+}
+
+.follow-info .author {
+  font-weight: bold;
+  font-size: large;
+}
+
+.follow-info .follow-button {
+  float: right;
+}
+
+.follow-data-list .follow_info .hidden {
+   display: none;
+}
+
+#registration-form label, #login-form label {
+    width: 150px;
+}
+
+#registration-form input, #login-form input {
+    width: 250px;
+}
+
+form .control-buttons {
+    padding: 10px;
+}
+
+#registration-form > div, #login-form > div {
+    padding: 5px;
+}
+
+
+
+
+

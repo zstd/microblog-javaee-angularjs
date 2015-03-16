@@ -1,0 +1,35 @@
+<div class="feed-list">
+  <div class="post" ng-repeat="post in feed.posts">
+    <div class="header">    	
+	    <span class="author">
+	    	<a ng-href="/blog/app/user?user={{post.creatorName}}">@{{post.creatorName}}</a>
+	    </span>
+	    <span class="controls">
+	    	<button type="button" class="btn btn-xs btn-success" 
+	    		ng-hide="followData.isShowFollowButton(post.creatorName) == false || currentUser.username == post.creatorName"
+	    		ng-click="followData.submitFollowAction(post.creatorName)">Follow</button>
+	    	<button type="button" class="btn btn-xs default" 
+	    		ng-hide="followData.isShowUnfollowButton(post.creatorName) == false"
+	    		ng-click="followData.submitUnfollowAction(post.creatorName)">Unfollow</button>
+	    </span>
+	    <span class="published">
+	    	Published: {{post.postedTime}}
+	    	<button type="button" class="btn btn-xs btn-primary" ng-click="feed.startPostEditing(post.id,'@' + post.creatorName + ' : ')">Reply</button>
+	    	<button type="button" class="btn btn-xs btn-primary" ng-click="feed.startPostEditing(post.id,'RE: ' + post.message)">Republish</button>
+	    </span>
+	</div>    
+    <div dpd-message-for="post"></div>
+    
+    <div class="footer">
+    	<form class="well" ng-show="feed.currentPostEdited(post.id)">
+          <textarea rows="2" cols="80" class="input-xxlarge" ng-model="feed.currentEditedPost.message"></textarea>
+          <div>
+            <button class="btn btn-xs btn-primary" ng-click="feed.addPost(feed.currentEditedPost.message)">Post</button>
+            <button class="btn btn-xs btn-info" ng-click="feed.stopPostEditing()">Cancel</button>
+          </div>
+        </form>    		    
+	</div>    
+	
+  </div>
+</div>
+  <!-- <button class="btn btn-link load-more-btn" ng-show="feed.moreToLoad" ng-click="feed.loadPosts()">Show more</button> -->
