@@ -58,7 +58,7 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="/blog/static/js/lib/jquery.js"></script>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/lib/jquery.js"></script>
   <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/global.js"></script>
   <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/welcome.js"></script>
 </body>

@@ -6,6 +6,7 @@ Sample playground repository for exploring the features of AngularJS framework a
 ## Libraries and version used
 - Angular JS (1.2.28)
 - Bootstrap (3.3.2)
+- JQuery 1.11.2
 
 
 
