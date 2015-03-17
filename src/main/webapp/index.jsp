@@ -13,7 +13,8 @@
     <ng-include src="'${pageContext.request.contextPath}/static/partials/header.html'"></ng-include>
     <div class="welcome" ng-controller="WelcomeCtrl">
       <div class="span8">
-        <form id="login-form" class="well" ng-show="showMode == 'LOGIN'" action="/blog/login" method="POST">
+        <form id="login-form" class="well" ng-show="showMode == 'LOGIN'"
+              action="${pageContext.request.contextPath}/login" method="POST">
           <h3>Enter existing user credentials</h3>
           <div>
             <label>Username</label><input type="text" name="j_username" />
@@ -27,7 +28,8 @@
             <a ng-href="" ng-click="setShowMode('REGISTER')"/>Register</a>
           </div>
         </form>
-        <form id="registration-form" class="well" ng-show="showMode == 'REGISTER'" action="/blog/register" method="POST">
+        <form id="registration-form" class="well" ng-show="showMode == 'REGISTER'"
+              action="${pageContext.request.contextPath}/register" method="POST">
           <h3>Enter new user's details</h3>
           <div>
             <label>Username</label><input type="text" name="username" />
