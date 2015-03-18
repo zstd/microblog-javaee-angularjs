@@ -20,6 +20,8 @@ public class RegistrationService {
 	
 	private static final String DUPLICATE_USERNAME_ERROR_TEMPLATE = "Blog user with username '%s' already exists";
 	private static final String DUPLICATE_NICKNAME_ERROR_TEMPLATE = "Blog user with nickname '%s' already exists";
+    private static final String FAILED_TO_SAVE_USER_ERROR = "Failed to save/create user ";
+    private static final String FAILED_TO_SAVE_ROLE_ERROR = "Failed to save/create role ";
 	
 	private UserRoleRepo userRoleRepo /*= new JdbcUserRoleRepo()*/;
 
@@ -39,14 +41,14 @@ public class RegistrationService {
 		try {
 			userRepo.save(newUser);
 		} catch (RepositoryException e) {
-            LOG.log(Level.SEVERE,"Failed to save user",e);
-			throw new RegistrationException("Failed to create user " + newUser);
+            LOG.log(Level.SEVERE,FAILED_TO_SAVE_USER_ERROR,e);
+			throw new RegistrationException(FAILED_TO_SAVE_USER_ERROR + newUser);
 		}
 		try {
 			userRoleRepo.add(newUser.getUsername(), MAIN_ROLE);
 		} catch (RepositoryException e) {
-            LOG.log(Level.SEVERE, "Failed to save user role", e);
-			throw new RegistrationException("Failed to create user ROLE " + newUser);
+            LOG.log(Level.SEVERE, FAILED_TO_SAVE_ROLE_ERROR, e);
+			throw new RegistrationException(FAILED_TO_SAVE_ROLE_ERROR + newUser);
 		}
 		return newUser;
 	}
