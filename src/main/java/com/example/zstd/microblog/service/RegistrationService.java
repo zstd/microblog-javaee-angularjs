@@ -9,17 +9,21 @@ import com.example.zstd.microblog.repository.UserRoleRepo;
 import com.google.common.base.Strings;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RegistrationService {
+
+    private static final Logger LOG = Logger.getLogger(RegistrationService.class.getName());
 	
 	public static final String MAIN_ROLE = "CHAT_USER";
 	
 	private static final String DUPLICATE_USERNAME_ERROR_TEMPLATE = "Blog user with username '%s' already exists";
 	private static final String DUPLICATE_NICKNAME_ERROR_TEMPLATE = "Blog user with nickname '%s' already exists";
 	
-	private UserRoleRepo userRoleRepo;
+	private UserRoleRepo userRoleRepo /*= new JdbcUserRoleRepo()*/;
 
-    private UserRepo userRepo;
+    private UserRepo userRepo /*=new JdbcUserRepo()*/;
 	
 	/**
 	 * Creates blog user from registration data
@@ -28,33 +32,23 @@ public class RegistrationService {
 	 * @throws RegistrationException 
 	 */
 	public User create(RegistrationData data) throws RegistrationException {
-		checkUsernameExists(data);
-		checkNickNameExists(data);
+		checkUserWithFieldExists(User.DB_FIELD_USERNAME,data.getUsername(),DUPLICATE_USERNAME_ERROR_TEMPLATE);
+        checkUserWithFieldExists(User.DB_FIELD_NICKNAME,data.getNickname(),DUPLICATE_NICKNAME_ERROR_TEMPLATE);
 
 		User newUser = createFromRegistrationData(data);
 		try {
 			userRepo.save(newUser);
 		} catch (RepositoryException e) {
+            LOG.log(Level.SEVERE,"Failed to save user",e);
 			throw new RegistrationException("Failed to create user " + newUser);
 		}
 		try {
 			userRoleRepo.add(newUser.getUsername(), MAIN_ROLE);
 		} catch (RepositoryException e) {
-			e.printStackTrace();
+            LOG.log(Level.SEVERE, "Failed to save user role", e);
 			throw new RegistrationException("Failed to create user ROLE " + newUser);
 		}
 		return newUser;
-	}
-
-	private void checkNickNameExists(RegistrationData data) throws RegistrationException {
-		List<User> blogUser = null;
-		if(!Strings.isNullOrEmpty(data.getNickname())) {
-			blogUser = userRepo.findByField(User.DB_FIELD_NICKNAME, data.getNickname());
-
-		}
-		if(blogUser != null && !blogUser.isEmpty()) {
-			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
-		}
 	}
 
 	private User createFromRegistrationData(RegistrationData data) {
@@ -66,20 +60,16 @@ public class RegistrationService {
 		blogUser.setPhotoUrl(data.getPhotoUrl());
 		return blogUser;
 	}
-//
-	private void checkUsernameExists(RegistrationData data) throws RegistrationException {
-		List<User> blogUser = null;
-		if(!Strings.isNullOrEmpty(data.getUsername())) {
-			try {
-				blogUser = userRepo.findByField(User.DB_FIELD_USERNAME, data.getUsername());
-			} catch (RepositoryException e) {
-				throw new RuntimeException(e.getMessage());
-			}
-		}
-		if(blogUser != null && !blogUser.isEmpty()) {
-			throw new RegistrationException(String.format(DUPLICATE_NICKNAME_ERROR_TEMPLATE, data.getNickname()));
-		}
-	}
+
+	private void checkUserWithFieldExists(String fieldName,String fieldValue,String errorTemplate) {
+        List<User> blogUser = null;
+        if(!Strings.isNullOrEmpty(fieldValue)) {
+            blogUser = userRepo.findByField(fieldName, fieldValue);
+        }
+        if(blogUser != null && !blogUser.isEmpty()) {
+            throw new RegistrationException(String.format(errorTemplate, fieldValue));
+        }
+    }
 
     public void setUserRepo(UserRepo userRepo) {
         this.userRepo = userRepo;

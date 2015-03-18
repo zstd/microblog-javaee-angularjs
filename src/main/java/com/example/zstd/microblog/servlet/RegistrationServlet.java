@@ -31,7 +31,8 @@ public class RegistrationServlet extends HttpServlet{
 	private RegistrationService registrationService = new RegistrationService();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().println("[not supported]");
+        LOG.info("doGet: request for register page, redirecting to welcome page");
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,7 +53,6 @@ public class RegistrationServlet extends HttpServlet{
             LOG.log(Level.SEVERE,"Registration data validation failed");
             response.sendRedirect("index.jsp?error=some_validation_error");
         }
-
 	}
 
     private RegistrationData createRegistrationData(HttpServletRequest request) {
