@@ -18,7 +18,7 @@ app.factory('Feed', function($rootScope,$http) {
     for(key in query) {
     	queryStr += key + "=" + query[key];
     }
-    $http.get('/blog/rest/posts?'+queryStr).
+    $http.get(MicroblogApp.Config.contextPath + '/rest/posts?'+queryStr).
 	    success(function(result, status, headers, config) {
 	    	if (result.length > PAGE_SIZE) {
 	            result.pop();
@@ -246,7 +246,7 @@ app.controller('LoginCtrl', function($scope, $rootScope,$http) {
   $rootScope.userLoaded = false;
   
   function getCurrentUser() {
-	  $http.get('/blog/rest/users/current').
+	  $http.get(MicroblogApp.Config.contextPath+'/rest/users/current').
 	    success(function(data, status, headers, config) {
 	    	//console.log('loaded ' + data);
 	    	if(data && data.username) {

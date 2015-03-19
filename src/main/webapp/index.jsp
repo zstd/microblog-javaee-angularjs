@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.css" />
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
   <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/lib/angular.js"></script>
+    <script type="text/javascript">
+        var MicroblogApp = {};
+        MicroblogApp.Config = {
+            contextPath : '<%=request.getContextPath()%>'
+        }
+    </script>
 </head>
 <body>
   <div class="container">
