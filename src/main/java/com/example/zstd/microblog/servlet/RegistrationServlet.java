@@ -50,7 +50,7 @@ public class RegistrationServlet extends HttpServlet{
                 throw new ServletException(e);
             }
         } else {
-            LOG.log(Level.SEVERE,"Registration data validation failed");
+            LOG.log(Level.SEVERE,"Registration data validation failed. Validations: " + validationErrors);
             response.sendRedirect("index.jsp?error=some_validation_error");
         }
 	}

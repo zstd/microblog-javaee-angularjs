@@ -82,7 +82,10 @@ public class RegistrationData {
 	 * @param validationMessages - container for validataion error messages.
 	 */
 	private void checkPhotoUrlValid(List<String> validationMessages) {
-		try {
+		if(Strings.isNullOrEmpty(photoUrl)) {
+            return;
+        }
+        try {
 			new URL(photoUrl);
 		} catch (MalformedURLException e) {
 			validationMessages.add(String.format(INVALID_URL_ERROR_TEMPLATE, photoUrl));
@@ -94,7 +97,7 @@ public class RegistrationData {
 	 * @param validationMessages - container for validataion error messages.
 	 */
 	private void checkPasswordAndPasswordCheck(List<String> validationMessages) {
-		if(password.equals(passwordCheck)) {
+		if(!password.equals(passwordCheck)) {
 			validationMessages.add("Password and password check are not equal");
 		}		
 	}
