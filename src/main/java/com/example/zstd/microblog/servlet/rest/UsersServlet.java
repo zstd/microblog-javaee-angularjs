@@ -2,6 +2,7 @@ package com.example.zstd.microblog.servlet.rest;
 
 import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.UserRepo;
+import com.example.zstd.microblog.service.ServiceLocator;
 import com.example.zstd.microblog.utils.StringUtils;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
@@ -33,7 +34,7 @@ public class UsersServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private UserRepo userRepo;
+	private UserRepo userRepo = ServiceLocator.getInstance().getService(UserRepo.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.fine("doGet: " + request.getRequestURI());
