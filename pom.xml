@@ -9,8 +9,27 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
+    <properties>
+        <spring.version>4.1.5.RELEASE</spring.version>
+    </properties>
+
+
 
     <dependencies>
+
+        <!-- test jetty deps -->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-web</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-webmvc</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
+
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -28,6 +47,14 @@
             <artifactId>gson</artifactId>
             <version>2.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>9.2.8.v20150217</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <!-- JDBC drivers  -->
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -80,9 +107,10 @@
                     <httpConnector>
                         <port>5080</port>
                     </httpConnector>
-                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <scanIntervalSeconds>2000</scanIntervalSeconds>
                     <jettyConfig>src/main/conf/jetty-env.xml</jettyConfig>
                     <webApp>
+                        <webInfIncludeJarPattern>test</webInfIncludeJarPattern>
                         <contextPath>/${project.build.finalName}</contextPath>
                     </webApp>
                 </configuration>
