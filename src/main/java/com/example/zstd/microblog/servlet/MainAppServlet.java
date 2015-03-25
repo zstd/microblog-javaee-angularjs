@@ -1,25 +1,26 @@
 package com.example.zstd.microblog.servlet;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
- * Servlet implementation for logout functionality.
+ * Servlet of main application page
  */
-@WebServlet(urlPatterns = {"/logout"})
-public class LogoutServlet extends HttpServlet{
+@WebServlet(urlPatterns = {"/app/main"})
+public class MainAppServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
+
+    private static final Logger LOG = Logger.getLogger(MainAppServlet.class.getName());
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().invalidate();
-		// New location to be redirected
-	    String site = request.getContextPath();
-	    response.setStatus(response.SC_MOVED_TEMPORARILY);
-	    response.setHeader("Location", site);    	    
+		LOG.info(" doGet ");
+        request.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

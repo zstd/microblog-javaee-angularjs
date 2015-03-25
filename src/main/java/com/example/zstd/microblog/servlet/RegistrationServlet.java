@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * Servlet processing new users registration. 
  */
-@WebServlet(urlPatterns = {"register"})
+@WebServlet(urlPatterns = {"/register"})
 public class RegistrationServlet extends HttpServlet{
 
     private static final Logger LOG = Logger.getLogger(RegistrationServlet.class.getName());

@@ -3,6 +3,7 @@ package com.example.zstd.microblog.servlet.rest;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class LoginServlet
  */
+@WebServlet(urlPatterns = {"/rest/posts/*"})
 public class PostsServlet extends HttpServlet {
 	
 	private static final Long ONE_SECOND_MILLIS = TimeUnit.SECONDS.toMillis(1);
