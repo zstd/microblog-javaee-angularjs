@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet{
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.info(" doGet ");
-        request.getSession().invalidate();
+        //request.getSession().invalidate();
 		String username = request.getParameter("j_username");
 		String password = request.getParameter("j_password");
 		request.login(username,password);

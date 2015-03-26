@@ -20,7 +20,7 @@ public class MainAppServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.info(" doGet ");
-        request.getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/main.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

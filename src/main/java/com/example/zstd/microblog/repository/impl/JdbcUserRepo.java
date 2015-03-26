@@ -13,10 +13,10 @@ import java.util.Map;
 public class JdbcUserRepo extends BasicJdbcRepo implements UserRepo {
 	
 	private static final String FIND_BY_FIELD_QUERY = 
-			"SELECT " + Joiner.on(",").join(", ", User.DB_FIELDS) + " FROM users WHERE %s = ?";
+			"SELECT " + Joiner.on(",").join(User.DB_FIELDS) + " FROM users WHERE %s = ?";
 	
 	private static final String SAVE_QUERY = 
-			"INSERT INTO users (" + Joiner.on(",").join(", ", User.DB_FIELDS) + ") VALUES (?,?,?,?,?)";
+			"INSERT INTO users (" + Joiner.on(",").join(User.DB_FIELDS) + ") VALUES (?,?,?,?,?)";
 	
 	private static final String FOLLOWING_DATA_QUERY = 
 			"select u.user_name, (select count(id) from follow_data fd where fd.following = u.user_name ) from users u";

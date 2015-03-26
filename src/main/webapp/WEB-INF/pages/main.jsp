@@ -2,15 +2,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html ng-app="microblogApp">
-<head>
-  <title>Microblogging</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.css" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
-  <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/lib/angular.js"></script>
-</head>
+<jsp:include page="../elements/page_head.jsp" />
 <body>
   <div class="container">
-    <ng-include src="'${pageContext.request.contextPath}/static/partials/header.html'"></ng-include>
+      <jsp:include page="../elements/header.jsp" />
         Welcome to the party!
   </div>
 

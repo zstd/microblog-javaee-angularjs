@@ -41,7 +41,7 @@ public class UsersServlet extends HttpServlet {
 
         Action action = Action.parseAction(request.getParameter(ACTION_PARAM));
         switch (action) {
-            case CURRENT_USER:
+            case CURRENT:
                 doCurrentUserAction(request,response);
                 break;
             case USER_INFO:
@@ -121,7 +121,7 @@ public class UsersServlet extends HttpServlet {
 	}
 
     private enum Action {
-        CURRENT_USER,
+        CURRENT,
         USER_INFO,
         NONE;
 

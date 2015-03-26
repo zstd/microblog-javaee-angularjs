@@ -246,7 +246,7 @@ app.controller('LoginCtrl', function($scope, $rootScope,$http) {
   $rootScope.userLoaded = false;
   
   function getCurrentUser() {
-	  $http.get(MicroblogApp.Config.contextPath+'/rest/users/current').
+	  $http.get(MicroblogApp.Config.contextPath+'/rest/users?action=current').
 	    success(function(data, status, headers, config) {
 	    	//console.log('loaded ' + data);
 	    	if(data && data.username) {
