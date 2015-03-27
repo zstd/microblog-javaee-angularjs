@@ -1,22 +1,10 @@
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <html ng-app="microblogApp">
-<head>
-  <title>Microblogging</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.css" />
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
-  <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/lib/angular.js"></script>
-    <script type="text/javascript">
-        var MicroblogApp = {};
-        MicroblogApp.Config = {
-            contextPath : '<%=request.getContextPath()%>'
-        }
-    </script>
-</head>
+<jsp:include page="WEB-INF/elements/page_head.jsp" />
 <body>
   <div class="container">
-    <ng-include src="'${pageContext.request.contextPath}/static/partials/header.html'"></ng-include>
+    <jsp:include page="WEB-INF/elements/header.jsp" />
     <div class="welcome" ng-controller="WelcomeCtrl">
       <div class="span8">
         <form id="login-form" class="well" ng-show="showMode == 'LOGIN'"
@@ -61,7 +49,6 @@
             <a ng-href="" ng-click="setShowMode('LOGIN')"/>Login</a>
           </div>
         </form>
-        
       </div>
     </div>
   </div>
