@@ -23,9 +23,9 @@ public class RegistrationService {
     private static final String FAILED_TO_SAVE_USER_ERROR = "Failed to save/create user ";
     private static final String FAILED_TO_SAVE_ROLE_ERROR = "Failed to save/create role ";
 	
-	private UserRoleRepo userRoleRepo /*= new JdbcUserRoleRepo()*/;
+	private UserRoleRepo userRoleRepo = ServiceLocator.getInstance().getService(UserRoleRepo.class);
 
-    private UserRepo userRepo /*=new JdbcUserRepo()*/;
+    private UserRepo userRepo = ServiceLocator.getInstance().getService(UserRepo.class);
 	
 	/**
 	 * Creates blog user from registration data
@@ -71,13 +71,5 @@ public class RegistrationService {
         if(blogUser != null && !blogUser.isEmpty()) {
             throw new RegistrationException(String.format(errorTemplate, fieldValue));
         }
-    }
-
-    public void setUserRepo(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
-
-    public void setUserRoleRepo(UserRoleRepo userRoleRepo) {
-        this.userRoleRepo = userRoleRepo;
     }
 }

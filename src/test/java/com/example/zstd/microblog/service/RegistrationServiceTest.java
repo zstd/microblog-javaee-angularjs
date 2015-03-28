@@ -7,6 +7,7 @@ import com.example.zstd.microblog.exception.RepositoryException;
 import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.repository.UserRoleRepo;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,10 +20,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RegistrationServiceTest {
 
@@ -41,13 +39,16 @@ public class RegistrationServiceTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
-        registrationService = new RegistrationService();
+    public void setUpClass() throws Exception {
         userRepo = mock(UserRepo.class);
         userRoleRepo = mock(UserRoleRepo.class);
-        registrationService.setUserRepo(userRepo);
-        registrationService.setUserRoleRepo(userRoleRepo);
+        ServiceLocator.initialize(ImmutableMap.<Class, Object>of(
+                UserRepo.class, userRepo,
+                UserRoleRepo.class, userRoleRepo
+        ));
+        registrationService = new RegistrationService();
     }
+
 
     @Test
     public void testCreate() throws Exception {

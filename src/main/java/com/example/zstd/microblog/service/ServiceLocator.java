@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class ServiceLocator {
 
-    private static ServiceLocator instance;
+    private static ServiceLocator instance = new ServiceLocator();
     private Map<Class,Object> services;
 
     public static final ServiceLocator getInstance() {
@@ -20,10 +20,6 @@ public class ServiceLocator {
     }
 
     public static void initialize(Map<Class,Object> services) {
-        if(instance != null) {
-            throw new IllegalStateException("ServiceLocator already initialized");
-        }
-        instance = new ServiceLocator();
         instance.services = ImmutableMap.copyOf(services);
     }
 
