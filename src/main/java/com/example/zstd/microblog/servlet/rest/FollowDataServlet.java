@@ -1,29 +1,45 @@
 package com.example.zstd.microblog.servlet.rest;
 
-import java.io.IOException;
+import com.example.zstd.microblog.model.FollowData;
+import com.example.zstd.microblog.service.FollowDataService;
+import com.example.zstd.microblog.service.ServiceLocator;
+import com.example.zstd.microblog.utils.SomeUtils;
+import com.example.zstd.microblog.utils.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Servlet for providing data about following-followers via REST.
  */
 @WebServlet(urlPatterns = {"/rest/followdata/*"})
 public class FollowDataServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-    
-	//private FollowDataService followDataService = new FollowDataService();
+
+    private static final Logger LOG = Logger.getLogger(UsersServlet.class.getName());
+
+    private FollowDataService followDataService =
+            ServiceLocator.getInstance().getService(FollowDataService.class);
 	
     public FollowDataServlet() {
         super();        
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doGet");
-		/*
-        String following = request.getParameter("following");
+		LOG.info("doGet");
+		String following = request.getParameter("following");
 		String follower = request.getParameter("follower");
 		List<FollowData> followData = Collections.emptyList();
 		if(!StringUtils.isNullOrEmpty(follower)) {
@@ -35,11 +51,10 @@ public class FollowDataServlet extends HttpServlet {
 		} 
 		
 		response.getWriter().println(toJsonString(followData));
-		*/
 	}
 
 
-    /*
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println(this.getClass().getSimpleName() + " doPost");
 		Map<String,String> map = extractParams(request);
@@ -61,7 +76,7 @@ public class FollowDataServlet extends HttpServlet {
 				SomeUtils.getFirst("following", request.getParameterMap()));
 	}
 	
-	private JsonObject toJsonObject(FollowData obj) {		
+	private JsonObject toJsonObject(FollowData obj) {
 		JsonObject message = new JsonObject();
 		message.addProperty("follower",obj.getFollower());
 		message.addProperty("following",obj.getFollowing());
@@ -88,6 +103,6 @@ public class FollowDataServlet extends HttpServlet {
 		String resultStr = gson.toJson(result);
         return resultStr;
 	}
-	*/
+
 
 }
