@@ -1,12 +1,14 @@
 package com.example.zstd.microblog.servlet.rest;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import com.example.zstd.microblog.service.BlogPostService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Servlet implementation class LoginServlet
@@ -23,7 +25,7 @@ public class PostsServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	//private BlogPostService postService = new BlogPostService();
+	private BlogPostService postService = new BlogPostService();
 	
 	
        
