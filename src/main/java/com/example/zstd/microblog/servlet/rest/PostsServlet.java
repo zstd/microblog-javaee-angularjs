@@ -1,6 +1,13 @@
 package com.example.zstd.microblog.servlet.rest;
 
+import com.example.zstd.microblog.model.BlogPost;
 import com.example.zstd.microblog.service.BlogPostService;
+import com.example.zstd.microblog.utils.SomeUtils;
+import com.example.zstd.microblog.utils.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,6 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +47,7 @@ public class PostsServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println(this.getClass().getSimpleName() + " doGet " + request.getRequestURI());		
-		/*
+
         List<BlogPost> posts = Collections.EMPTY_LIST;
 		if(!StringUtils.isNullOrEmpty(request.getParameter("creatorName"))) {
 			doGetAllUserMessages(request,response);			
@@ -49,10 +61,10 @@ public class PostsServlet extends HttpServlet {
 			posts = postService.getList();
 			Collections.sort(posts, new BlogPostComparator());
 			response.getWriter().println(toJsonString(posts));
-		}*/
+		}
 		
 	}
-    /*
+
 	private void doGetFollowingMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		System.out.println("doGetFollowingMessages");
 		List<BlogPost> posts = postService.getMessagesOfUserFollowers(request.getUserPrincipal().getName());
@@ -162,7 +174,7 @@ public class PostsServlet extends HttpServlet {
 		BlogPost post = new BlogPost(1L,"bob","message of @bob in #topic1 is here","topic1,","bob,alice",new Date());
 		toJsonString(Arrays.asList(post));
 	}
-	
+	*/
 	private class BlogPostComparator implements Comparator<BlogPost> {
 
 		@Override
@@ -171,5 +183,5 @@ public class PostsServlet extends HttpServlet {
 		}
 		
 	}
-    */
+
 }
