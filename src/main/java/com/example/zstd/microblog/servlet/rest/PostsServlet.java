@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * Servlet implementation class LoginServlet
@@ -34,8 +35,8 @@ public class PostsServlet extends HttpServlet {
 	private static final Long ONE_DAY_MILLIS = TimeUnit.DAYS.toMillis(1);
 	
 	private static final String DEFAULT_FORMAT = "dd/MM/yyyy hh:mm";
-	
-	private static final long serialVersionUID = 1L;
+
+    private static final Logger LOG = Logger.getLogger(UsersServlet.class.getName());
 	
 	private BlogPostService postService = new BlogPostService();
 	
@@ -72,27 +73,27 @@ public class PostsServlet extends HttpServlet {
 	}
 
 	private void doGetDiscoverMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		System.out.println("doGetDiscoverMessages");
+        LOG.info("doGetDiscoverMessages");
 		List<BlogPost> posts = postService.discoverMessagesForUser(request.getUserPrincipal().getName());
 		response.getWriter().println(toJsonString(posts));		
 	}
 
 	private void doGetAllTopicMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		System.out.println("doGetAllTopicMessages");
-		List<BlogPost> posts = postService.getListForTopic(request.getParameter("topic"));
+		LOG.info("doGetAllTopicMessages");
+        List<BlogPost> posts = postService.getListForTopic(request.getParameter("topic"));
 		Collections.sort(posts, new BlogPostComparator());
 		response.getWriter().println(toJsonString(posts));		
 	}
 
 	private void doGetAllUserMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		System.out.println("doGetAllUserMessages");
+        LOG.info("doGetAllUserMessages");
 		List<BlogPost> posts = postService.getListForUser(request.getParameter("creatorName"));
 		Collections.sort(posts, new BlogPostComparator());
 		response.getWriter().println(toJsonString(posts));
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(this.getClass().getSimpleName() + " doPost " + request.getRequestURI());
+        LOG.info(this.getClass().getSimpleName() + " doPost " + request.getRequestURI());
 		String payload = SomeUtils.extractPayloadAsString(request);
 		BlogPost created = postService.save(request.getUserPrincipal().getName(), payload);
 		response.getWriter().println(toJsonString(created));
