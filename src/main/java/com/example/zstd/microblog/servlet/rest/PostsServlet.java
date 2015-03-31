@@ -140,7 +140,7 @@ public class PostsServlet extends HttpServlet {
 		return resultStr;
 	}
 
-	private static String getPrettyTime(Date currentDate,Date created) {
+	static String getPrettyTime(Date currentDate,Date created) {
 		Long createdTimeMillis = created.getTime();
 		Long currentTimeMillis = currentDate.getTime();
 		Long delta = currentTimeMillis - createdTimeMillis;
@@ -160,15 +160,6 @@ public class PostsServlet extends HttpServlet {
 	public static void main(String args[]) throws ParseException {
 		//testPublishFormatting();
 		//testJsonFormattingFormatting();	
-	}
-	
-	private static final void testPublishFormatting() throws ParseException {
-		SimpleDateFormat testFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-		Date current = testFormat.parse("04/04/2015 09:09:09");
-		System.out.println(getPrettyTime(current, testFormat.parse("04/04/2015 09:09:06")));
-		System.out.println(getPrettyTime(current, testFormat.parse("04/04/2015 09:07:06")));
-		System.out.println(getPrettyTime(current, testFormat.parse("04/04/2015 08:07:06")));
-		System.out.println(getPrettyTime(current, testFormat.parse("03/04/2015 08:07:06")));
 	}
 	
 	private static final void testJsonFormattingFormatting() throws ParseException {
