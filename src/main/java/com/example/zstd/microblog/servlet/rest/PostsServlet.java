@@ -47,7 +47,7 @@ public class PostsServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(this.getClass().getSimpleName() + " doGet " + request.getRequestURI());		
+		LOG.info("doGet: " + request.getRequestURI());
 
         List<BlogPost> posts = Collections.EMPTY_LIST;
 		if(!StringUtils.isNullOrEmpty(request.getParameter("creatorName"))) {
@@ -67,7 +67,7 @@ public class PostsServlet extends HttpServlet {
 	}
 
 	private void doGetFollowingMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
-		System.out.println("doGetFollowingMessages");
+        LOG.info("doGetFollowingMessages");
 		List<BlogPost> posts = postService.getMessagesOfUserFollowers(request.getUserPrincipal().getName());
 		response.getWriter().println(toJsonString(posts));		
 	}
