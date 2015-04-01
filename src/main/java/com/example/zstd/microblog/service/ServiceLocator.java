@@ -25,6 +25,7 @@ public class ServiceLocator {
 
     public <T> T getService(Class<T> type) {
         Preconditions.checkArgument(type != null, "Service type is null");
+        Preconditions.checkState(services != null, "Services not initialized");
         T result = (T)services.get(type);
         if(result == null) {
             throw new IllegalArgumentException("Not found service of class " + type.getName());

@@ -4,6 +4,7 @@ import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.service.ServiceLocator;
 import com.example.zstd.microblog.utils.StringUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +32,8 @@ public class UsersServlet extends HttpServlet {
 	
 	private static final String DEFAULT_PHOTO_URL = "/blog/static/img/default.jpg";
 
-    private static final String ACTION_PARAM = "action";
+    public static final String ACTION_PARAM = "action";
+    public static final String UNDEFINED_ACTION_ERROR = "Undefined action";
 	
 	private UserRepo userRepo = ServiceLocator.getInstance().getService(UserRepo.class);
 
@@ -53,6 +55,7 @@ public class UsersServlet extends HttpServlet {
 	}
 
     private void returnUserAsJson(String name,HttpServletResponse response) throws IOException {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name),"Empty user name provided!");
         User blogUser = null;
         List<User> list = userRepo.findByField(User.DB_FIELD_USERNAME, name);
         if(!list.isEmpty()) {
@@ -69,7 +72,7 @@ public class UsersServlet extends HttpServlet {
 
     private void doUndefinedAction(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        response.getWriter().println("undefined action");
+        response.getWriter().print(UNDEFINED_ACTION_ERROR);
     }
 
     private void doUserInfoAction(HttpServletRequest request, HttpServletResponse response)
@@ -79,7 +82,11 @@ public class UsersServlet extends HttpServlet {
 
     private void doCurrentUserAction(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        returnUserAsJson(request.getUserPrincipal().getName(),response);
+        String currentUserName =
+                request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : null;
+        Preconditions.checkState(currentUserName != null,
+                "Failed to get current user name, is request authenticated?");
+        returnUserAsJson(request.getUserPrincipal().getName(), response);
     }
 
 	private String toJsonString(User blogUser) {
@@ -115,11 +122,11 @@ public class UsersServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doPost");
+		LOG.info("doPost");
 		response.getWriter().println("doGet");
 	}
 
-    private enum Action {
+    public static enum Action {
         CURRENT,
         USER_INFO,
         NONE;
