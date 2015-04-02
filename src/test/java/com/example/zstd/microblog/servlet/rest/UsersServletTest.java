@@ -3,68 +3,104 @@ package com.example.zstd.microblog.servlet.rest;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.service.ServiceLocator;
 import com.google.common.collect.ImmutableMap;
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
-import com.meterware.servletunit.ServletRunner;
-import com.meterware.servletunit.ServletUnitClient;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UsersServletTest {
 
-    private ServletRunner servletRunner = new ServletRunner();
+    //private ServletRunner servletRunner = new ServletRunner();
 
     private UserRepo userRepo;
 
+    private UsersServlet usersServlet;
+
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private StringWriter stringWriter = new StringWriter();
+
     @Before
     public void setUp() throws Exception {
-        servletRunner.registerServlet("myServlet", UsersServlet.class.getName());
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+
+        when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
 
         userRepo = mock(UserRepo.class);
         ServiceLocator.initialize(ImmutableMap.<Class, Object>of(
                 UserRepo.class, userRepo
         ));
+        usersServlet = new UsersServlet();
     }
 
     @Test
     public void testGetWithUndefinedAction() throws Exception {
-        ServletUnitClient sc = servletRunner.newClient();
-        WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
 
-        request.setParameter( "color", "red" );
-        WebResponse response = sc.getResponse( request );
-        assertNotNull("No response received", response );
-        assertEquals( "content type", "text/plain", response.getContentType() );
-        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, response.getText() );
+        usersServlet.doGet(request,response);
 
+        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, stringWriter.toString());
+    }
+
+    private void givenRequestContainsParameters(final Map<String,String[]> map) {
+        when(request.getParameterMap()).thenReturn(map);
+        when(request.getParameter(anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                String paramValue[] = map.get(invocation.getArguments()[0]);
+                return paramValue != null ? paramValue[0] : null;
+            }
+        });
     }
 
     @Test
-    //@Ignore("need to find out the way to mock getUserPrincipal() method")
     public void testGetWithCurrentUserAction() throws Exception {
-        ServletUnitClient sc = servletRunner.newClient();
-        WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
-        request.setParameter(UsersServlet.ACTION_PARAM, UsersServlet.Action.CURRENT.toString());
-        WebResponse response = sc.getResponse( request );
-        assertNotNull("No response received", response );
-        assertEquals( "content type", "text/plain", response.getContentType() );
-        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, response.getText() );
+        //givenUserExists()
+        givenRequestContainsParameters(ImmutableMap.of(
+                UsersServlet.ACTION_PARAM, new String[]{UsersServlet.Action.CURRENT.toString()}
+        ));
+        givenRequestContainsUserWithRoles("blog-user","role1","role2");
+
+        usersServlet.doGet(request,response);
     }
 
-    @Test
-    //@Ignore("need to find out the way to mock getUserPrincipal() method")
-    public void testGetWithUserInfoAction() throws Exception {
-        ServletUnitClient sc = servletRunner.newClient();
-        WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
-        request.setParameter(UsersServlet.ACTION_PARAM, UsersServlet.Action.USER_INFO.toString());
-        WebResponse response = sc.getResponse( request );
-        assertNotNull("No response received", response );
-        assertEquals( "content type", "text/plain", response.getContentType() );
-        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, response.getText() );
+    private void givenRequestContainsUserWithRoles(final String name, final String...roles) {
+        when(request.getUserPrincipal()).thenReturn(new Principal() {
+            @Override
+            public String getName() {
+                return name;
+            }
+        });
+        when(request.isUserInRole(anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return Arrays.asList(roles).contains(invocation.getArguments()[0]);
+            }
+        });
     }
+//
+//    @Test
+//    //@Ignore("need to find out the way to mock getUserPrincipal() method")
+//    public void testGetWithUserInfoAction() throws Exception {
+//        ServletUnitClient sc = servletRunner.newClient();
+//        WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
+//        request.setParameter(UsersServlet.ACTION_PARAM, UsersServlet.Action.USER_INFO.toString());
+//        WebResponse response = sc.getResponse( request );
+//        assertNotNull("No response received", response );
+//        assertEquals( "content type", "text/plain", response.getContentType() );
+//        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, response.getText() );
+//    }
 }
