@@ -9,7 +9,6 @@ import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +45,7 @@ public class UsersServletTest {
     }
 
     @Test
-    @Ignore("need to find out the way to mock getUserPrincipal() method")
+    //@Ignore("need to find out the way to mock getUserPrincipal() method")
     public void testGetWithCurrentUserAction() throws Exception {
         ServletUnitClient sc = servletRunner.newClient();
         WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
@@ -58,7 +57,7 @@ public class UsersServletTest {
     }
 
     @Test
-    @Ignore("need to find out the way to mock getUserPrincipal() method")
+    //@Ignore("need to find out the way to mock getUserPrincipal() method")
     public void testGetWithUserInfoAction() throws Exception {
         ServletUnitClient sc = servletRunner.newClient();
         WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
