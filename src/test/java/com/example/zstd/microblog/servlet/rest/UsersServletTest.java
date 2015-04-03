@@ -1,5 +1,7 @@
 package com.example.zstd.microblog.servlet.rest;
 
+import com.example.zstd.microblog.model.User;
+import com.example.zstd.microblog.model.UserBuilder;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.service.ServiceLocator;
 import com.google.common.collect.ImmutableMap;
@@ -17,9 +19,12 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 public class UsersServletTest {
 
@@ -68,13 +73,23 @@ public class UsersServletTest {
 
     @Test
     public void testGetWithCurrentUserAction() throws Exception {
-        //givenUserExists()
+        User user = givenUserExists(UserBuilder.anUser().withNames("username","nickname").withPassword("pass"));
         givenRequestContainsParameters(ImmutableMap.of(
                 UsersServlet.ACTION_PARAM, new String[]{UsersServlet.Action.CURRENT.toString()}
         ));
-        givenRequestContainsUserWithRoles("blog-user","role1","role2");
+        givenRequestContainsUserWithRoles(user.getUsername(),"role1","role2");
 
         usersServlet.doGet(request,response);
+
+        assertThat(stringWriter.toString(),sameJSONAs("{\"username\":\"username\",\"nickname\":\"nickname\",\"photoUrl\":\"/blog/static/img/default.jpg\"}"));
+        //assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, stringWriter.toString());
+    }
+
+    private User givenUserExists(UserBuilder userBuilder) {
+        User user = userBuilder.build();
+        when(userRepo.findByField(eq(User.DB_FIELD_USERNAME),eq(user.getUsername()))).
+                thenReturn(Arrays.asList(user));
+        return user;
     }
 
     private void givenRequestContainsUserWithRoles(final String name, final String...roles) {
