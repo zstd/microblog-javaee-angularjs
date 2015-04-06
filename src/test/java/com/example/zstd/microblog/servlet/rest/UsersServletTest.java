@@ -4,7 +4,11 @@ import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.model.UserBuilder;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.service.ServiceLocator;
+import com.example.zstd.microblog.utils.ServletUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -12,23 +16,31 @@ import org.mockito.stubbing.Answer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 public class UsersServletTest {
 
-    //private ServletRunner servletRunner = new ServletRunner();
+    private static final Logger LOG = Logger.getLogger(UsersServletTest.class.getName());
 
     private UserRepo userRepo;
 
@@ -36,7 +48,9 @@ public class UsersServletTest {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
+
     private StringWriter stringWriter = new StringWriter();
+    private int responseStatusCode = 0;
 
     @Before
     public void setUp() throws Exception {
@@ -44,6 +58,13 @@ public class UsersServletTest {
         response = mock(HttpServletResponse.class);
 
         when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+        doAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                responseStatusCode = (Integer) invocation.getArguments()[0];
+                return null;
+            }
+        }).when(response).setStatus(anyInt());
 
         userRepo = mock(UserRepo.class);
         ServiceLocator.initialize(ImmutableMap.<Class, Object>of(
@@ -73,16 +94,16 @@ public class UsersServletTest {
 
     @Test
     public void testGetWithCurrentUserAction() throws Exception {
-        User user = givenUserExists(UserBuilder.anUser().withNames("username","nickname").withPassword("pass"));
+        User user = givenUserExists(UserBuilder.anUser().
+                withNames("username", "nickname").withPassword("pass"));
         givenRequestContainsParameters(ImmutableMap.of(
-                UsersServlet.ACTION_PARAM, new String[]{UsersServlet.Action.CURRENT.toString()}
+                UsersServlet.PARAM_ACTION, new String[]{UsersServlet.Action.CURRENT.toString()}
         ));
         givenRequestContainsUserWithRoles(user.getUsername(),"role1","role2");
 
         usersServlet.doGet(request,response);
 
-        assertThat(stringWriter.toString(),sameJSONAs("{\"username\":\"username\",\"nickname\":\"nickname\",\"photoUrl\":\"/blog/static/img/default.jpg\"}"));
-        //assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, stringWriter.toString());
+        assertThat(stringWriter.toString(), sameJSONAs(fileContentAsString("current-user.json")));
     }
 
     private User givenUserExists(UserBuilder userBuilder) {
@@ -106,16 +127,40 @@ public class UsersServletTest {
             }
         });
     }
-//
-//    @Test
-//    //@Ignore("need to find out the way to mock getUserPrincipal() method")
-//    public void testGetWithUserInfoAction() throws Exception {
-//        ServletUnitClient sc = servletRunner.newClient();
-//        WebRequest request   = new GetMethodWebRequest( "http://microblog/myServlet" );
-//        request.setParameter(UsersServlet.ACTION_PARAM, UsersServlet.Action.USER_INFO.toString());
-//        WebResponse response = sc.getResponse( request );
-//        assertNotNull("No response received", response );
-//        assertEquals( "content type", "text/plain", response.getContentType() );
-//        assertEquals(UsersServlet.UNDEFINED_ACTION_ERROR, response.getText() );
-//    }
+
+    private String fileContentAsString(String pathToFile) {
+        Preconditions.checkNotNull(pathToFile);
+        String result = null;
+        try {
+            URL url = this.getClass().getResource(pathToFile);
+            Preconditions.checkNotNull(url,"Resource not found: " + pathToFile);
+            String fileStr = this.getClass().getResource(pathToFile).getFile();
+            LOG.log(Level.CONFIG,"Loading resource from file: " + fileStr);
+            result = Files.toString(new File(fileStr), Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            Throwables.propagate(e);
+        }
+        return result;
+    }
+
+    @Test
+    public void testGetWithUserInfoAction() throws Exception {
+        User user = givenUserExists(UserBuilder.anUser().
+                withNames("username","nickname").withPassword("pass").withPhotoUrl("/some/photo.jpeg"));
+        givenRequestContainsParameters(ImmutableMap.of(
+                UsersServlet.PARAM_ACTION, new String[]{UsersServlet.Action.USER_INFO.toString()},
+                UsersServlet.PARAM_USER, new String[]{user.getUsername()}
+        ));
+
+        usersServlet.doGet(request,response);
+
+        assertThat(stringWriter.toString(), sameJSONAs(fileContentAsString("user-with-photo.json")));
+    }
+
+    @Test
+    public void testPostNotAllowed() throws Exception {
+        usersServlet.doPost(request,response);
+        assertEquals(responseStatusCode, ServletUtils.METHOD_NOT_ALLOWED);
+
+    }
 }

@@ -1,0 +1,5 @@
+{
+  username: "username",
+  nickname: "nickname",
+  photoUrl: "/some/photo.jpeg"
+}

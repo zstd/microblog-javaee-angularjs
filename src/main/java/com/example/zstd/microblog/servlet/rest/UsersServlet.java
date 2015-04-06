@@ -3,12 +3,12 @@ package com.example.zstd.microblog.servlet.rest;
 import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.service.ServiceLocator;
+import com.example.zstd.microblog.utils.ServletUtils;
 import com.example.zstd.microblog.utils.StringUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
@@ -32,7 +32,9 @@ public class UsersServlet extends HttpServlet {
 	
 	private static final String DEFAULT_PHOTO_URL = "/blog/static/img/default.jpg";
 
-    public static final String ACTION_PARAM = "action";
+    public static final String PARAM_ACTION = "action";
+    public static final String PARAM_USER = "user";
+
     public static final String UNDEFINED_ACTION_ERROR = "Undefined action";
 	
 	private UserRepo userRepo = ServiceLocator.getInstance().getService(UserRepo.class);
@@ -40,7 +42,7 @@ public class UsersServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.fine("doGet: " + request.getRequestURI());
 
-        Action action = Action.parseAction(request.getParameter(ACTION_PARAM));
+        Action action = Action.parseAction(request.getParameter(PARAM_ACTION));
         switch (action) {
             case CURRENT:
                 doCurrentUserAction(request,response);
@@ -77,7 +79,7 @@ public class UsersServlet extends HttpServlet {
 
     private void doUserInfoAction(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        returnUserAsJson(request.getParameter("user"),response);
+        returnUserAsJson(request.getParameter(PARAM_USER),response);
     }
 
     private void doCurrentUserAction(HttpServletRequest request, HttpServletResponse response)
@@ -103,27 +105,10 @@ public class UsersServlet extends HttpServlet {
 		String resultStr = gson.toJson(result);
         return resultStr;
 	}
-	
-	private String toJsonString(List<User> blogUsers) {
-		JsonArray resultArray = new JsonArray();
-		
-		for(User blogUser : blogUsers) {
-			JsonObject result = new JsonObject();
-			result.addProperty("username",blogUser.getUsername());
-			result.addProperty("nickname",blogUser.getNickname());
-			result.addProperty("description",blogUser.getDescription());
-			result.addProperty("photoUrl",blogUser.getPhotoUrl());
-			resultArray.add(result);
-		}
-		
-		Gson gson = new GsonBuilder().create();
-		String resultStr = gson.toJson(resultArray);
-        return resultStr;
-	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LOG.info("doPost");
-		response.getWriter().println("doGet");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		LOG.info("doPost: not allowed");
+        ServletUtils.answerNotAllowed(response, ServletUtils.Method.GET);
 	}
 
     public static enum Action {
