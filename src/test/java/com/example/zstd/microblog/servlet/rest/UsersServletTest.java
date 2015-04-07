@@ -26,7 +26,7 @@ public class UsersServletTest extends ServletTestBase {
 
     private UsersServlet usersServlet;
 
-    
+
     @Override
     public void doSetUp() {
 

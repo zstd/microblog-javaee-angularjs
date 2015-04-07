@@ -50,7 +50,7 @@ public class FollowDataServlet extends HttpServlet {
 			System.err.println("No input for follow data provided");
 		} 
 		
-		response.getWriter().println(toJsonString(followData));
+		response.getWriter().print(toJsonString(followData));
 	}
 
 
