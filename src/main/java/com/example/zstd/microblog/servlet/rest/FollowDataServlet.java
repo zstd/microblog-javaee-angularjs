@@ -30,6 +30,8 @@ public class FollowDataServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(UsersServlet.class.getName());
 
+    public static final String EMPTY_RESULT = "[]";
+
     private FollowDataService followDataService =
             ServiceLocator.getInstance().getService(FollowDataService.class);
 	
@@ -47,7 +49,7 @@ public class FollowDataServlet extends HttpServlet {
 		} else if(!StringUtils.isNullOrEmpty(following)) {
 			followData = followDataService.getFollowingData(following);
 		} else {
-			System.err.println("No input for follow data provided");
+			LOG.warning("No input for follow data provided");
 		} 
 		
 		response.getWriter().print(toJsonString(followData));
@@ -56,7 +58,7 @@ public class FollowDataServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(this.getClass().getSimpleName() + " doPost");
+		LOG.fine("doPost: " + request.getParameterMap());
 		Map<String,String> map = extractParams(request);
 		FollowData added = followDataService.addFollowerData(map.get("follower"),map.get("following"));
 		response.getWriter().println(toJsonString(added));
@@ -71,7 +73,7 @@ public class FollowDataServlet extends HttpServlet {
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println(this.getClass().getSimpleName() + " doDelete " + request.getRequestURI());
+		LOG.fine("doDelete: " + request.getRequestURI());
 		followDataService.deleteFollowerData(SomeUtils.getFirst("follower", request.getParameterMap()),
 				SomeUtils.getFirst("following", request.getParameterMap()));
 	}
