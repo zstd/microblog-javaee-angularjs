@@ -1,0 +1,12 @@
+[
+  {
+    "follower": "follower #0 of bob",
+    "following": "following #0 of bob",
+    "id": 0
+  },
+  {
+    "follower": "follower #1 of bob",
+    "following": "following #1 of bob",
+    "id": 1
+  }
+]

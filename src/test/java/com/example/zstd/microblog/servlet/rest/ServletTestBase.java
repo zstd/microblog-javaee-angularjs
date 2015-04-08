@@ -9,10 +9,7 @@ import org.mockito.stubbing.Answer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.Principal;
@@ -68,6 +65,12 @@ public class ServletTestBase {
                 return paramValue != null ? paramValue[0] : null;
             }
         });
+    }
+
+    protected void givenRequestContainsPayload(final InputStream inputStream) throws IOException {
+        when(request.getReader()).thenReturn(new BufferedReader(new InputStreamReader(inputStream)));
+
+        //when(request.getInputStream()).thenReturn(inputStream);
     }
 
 

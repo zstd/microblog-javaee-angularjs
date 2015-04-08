@@ -5,6 +5,7 @@ import com.example.zstd.microblog.service.FollowDataService;
 import com.example.zstd.microblog.service.ServiceLocator;
 import com.example.zstd.microblog.utils.SomeUtils;
 import com.example.zstd.microblog.utils.StringUtils;
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -32,6 +33,9 @@ public class FollowDataServlet extends HttpServlet {
 
     public static final String EMPTY_RESULT = "[]";
 
+    public static final String PARAM_FOLLOWING = "following";
+    public static final String PARAM_FOLLOWER = "follower";
+
     private FollowDataService followDataService =
             ServiceLocator.getInstance().getService(FollowDataService.class);
 	
@@ -41,8 +45,8 @@ public class FollowDataServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.info("doGet");
-		String following = request.getParameter("following");
-		String follower = request.getParameter("follower");
+		String following = request.getParameter(PARAM_FOLLOWING);
+		String follower = request.getParameter(PARAM_FOLLOWER);
 		List<FollowData> followData = Collections.emptyList();
 		if(!StringUtils.isNullOrEmpty(follower)) {
 			followData = followDataService.getFollowerData(follower);
@@ -61,13 +65,15 @@ public class FollowDataServlet extends HttpServlet {
 		LOG.fine("doPost: " + request.getParameterMap());
 		Map<String,String> map = extractParams(request);
 		FollowData added = followDataService.addFollowerData(map.get("follower"),map.get("following"));
+        Preconditions.checkNotNull(added,
+                String.format("Follow data was not created for follower %s and following %s",null,null));
 		response.getWriter().println(toJsonString(added));
 	}
 	
 	private Map<String,String> extractParams(HttpServletRequest request) throws IOException {
 		String payload = SomeUtils.extractPayloadAsString(request);
 		Gson gson = new GsonBuilder().create();
-		Map<String,String> map=new HashMap<String,String>();
+		Map<String,String> map = new HashMap<String,String>();
 		map=(Map<String,String>) gson.fromJson(payload, map.getClass());
 		return map;
 	}
