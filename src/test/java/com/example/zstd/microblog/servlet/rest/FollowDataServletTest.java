@@ -13,8 +13,7 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 public class FollowDataServletTest extends ServletTestBase {
@@ -61,10 +60,30 @@ public class FollowDataServletTest extends ServletTestBase {
     @Test
     public void testPostFollowingData() throws Exception {
         givenRequestContainsPayload(new ByteArrayInputStream(fileContentAsString("following-data-create-request.json").getBytes()));
+        givenFollowDataCanBeCreated("follower #0 of bob", "following #0 of bob");
 
         followDataServlet.doPost(request, response);
 
         assertThat(stringWriter.toString(), sameJSONAs(fileContentAsString("following-data.json")).allowingAnyArrayOrdering());
+    }
+
+    @Test
+    public void testDeleteFollowingData() throws Exception {
+        String following = "following-" + USER,
+                follower = "follower-" + USER;
+        givenRequestContainsParameters(ImmutableMap.of(
+                FollowDataServlet.PARAM_FOLLOWING, new String[]{following},
+                FollowDataServlet.PARAM_FOLLOWER, new String[]{follower}
+        ));
+
+        followDataServlet.doDelete(request, response);
+
+        verify(followDataService).deleteFollowerData(eq(follower), eq(following));
+    }
+
+    private void givenFollowDataCanBeCreated(String follower, String following) {
+        when(followDataService.addFollowerData(eq(follower),eq(following))).
+                thenReturn(new FollowData(0L, follower, following));
     }
 
     private FollowData followData(String user, int index) {

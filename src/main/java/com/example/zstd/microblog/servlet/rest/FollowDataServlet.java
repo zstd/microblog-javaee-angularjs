@@ -64,9 +64,11 @@ public class FollowDataServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOG.fine("doPost: " + request.getParameterMap());
 		Map<String,String> map = extractParams(request);
-		FollowData added = followDataService.addFollowerData(map.get("follower"),map.get("following"));
+        String follower = map.get("follower"),
+                following = map.get("following");
+        FollowData added = followDataService.addFollowerData(follower,following);
         Preconditions.checkNotNull(added,
-                String.format("Follow data was not created for follower %s and following %s",null,null));
+                String.format("Follow data was not created for follower %s and following %s",follower,following));
 		response.getWriter().println(toJsonString(added));
 	}
 	
@@ -80,8 +82,9 @@ public class FollowDataServlet extends HttpServlet {
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		LOG.fine("doDelete: " + request.getRequestURI());
-		followDataService.deleteFollowerData(SomeUtils.getFirst("follower", request.getParameterMap()),
-				SomeUtils.getFirst("following", request.getParameterMap()));
+        String follower = SomeUtils.getFirst("follower", request.getParameterMap()),
+                following = SomeUtils.getFirst("following", request.getParameterMap());
+		followDataService.deleteFollowerData(follower,following);
 	}
 	
 	private JsonObject toJsonObject(FollowData obj) {
