@@ -2,6 +2,7 @@ package com.example.zstd.microblog.servlet.rest;
 
 import com.example.zstd.microblog.model.BlogPost;
 import com.example.zstd.microblog.service.BlogPostService;
+import com.example.zstd.microblog.service.ServiceLocator;
 import com.example.zstd.microblog.utils.SomeUtils;
 import com.example.zstd.microblog.utils.StringUtils;
 import com.google.gson.Gson;
@@ -33,15 +34,15 @@ public class PostsServlet extends HttpServlet {
 	private static final Long ONE_MINUTE_MILLIS = TimeUnit.MINUTES.toMillis(1);
 	private static final Long ONE_HOUR_MILLIS = TimeUnit.HOURS.toMillis(1);
 	private static final Long ONE_DAY_MILLIS = TimeUnit.DAYS.toMillis(1);
+
+    public static final String PARAM_CREATOR_NAME = "creatorName";
 	
 	private static final String DEFAULT_FORMAT = "dd/MM/yyyy hh:mm";
 
     private static final Logger LOG = Logger.getLogger(UsersServlet.class.getName());
 	
-	private BlogPostService postService = new BlogPostService();
-	
-	
-       
+	private BlogPostService postService = ServiceLocator.getInstance().getService(BlogPostService.class);
+
     public PostsServlet() {
         super();        
     }
@@ -50,7 +51,7 @@ public class PostsServlet extends HttpServlet {
 		LOG.info("doGet: " + request.getRequestURI());
 
         List<BlogPost> posts = Collections.EMPTY_LIST;
-		if(!StringUtils.isNullOrEmpty(request.getParameter("creatorName"))) {
+		if(!StringUtils.isNullOrEmpty(request.getParameter(PARAM_CREATOR_NAME))) {
 			doGetAllUserMessages(request,response);			
 		} else if(!StringUtils.isNullOrEmpty(request.getParameter("topic"))) {
 			doGetAllTopicMessages(request,response);			
@@ -63,7 +64,6 @@ public class PostsServlet extends HttpServlet {
 			Collections.sort(posts, new BlogPostComparator());
 			response.getWriter().println(toJsonString(posts));
 		}
-		
 	}
 
 	private void doGetFollowingMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
@@ -87,7 +87,7 @@ public class PostsServlet extends HttpServlet {
 
 	private void doGetAllUserMessages(HttpServletRequest request,HttpServletResponse response) throws IOException {
         LOG.info("doGetAllUserMessages");
-		List<BlogPost> posts = postService.getListForUser(request.getParameter("creatorName"));
+		List<BlogPost> posts = postService.getListForUser(request.getParameter(PARAM_CREATOR_NAME));
 		Collections.sort(posts, new BlogPostComparator());
 		response.getWriter().println(toJsonString(posts));
 	}
@@ -155,21 +155,8 @@ public class PostsServlet extends HttpServlet {
 		}		
 	}
 	
-	/* Simple tests are here */
-	/*
-	public static void main(String args[]) throws ParseException {
-		//testPublishFormatting();
-		//testJsonFormattingFormatting();	
-	}
-	
-	private static final void testJsonFormattingFormatting() throws ParseException {
-		BlogPost post = new BlogPost(1L,"bob","message of @bob in #topic1 is here","topic1,","bob,alice",new Date());
-		toJsonString(Arrays.asList(post));
-	}
-	*/
 	private class BlogPostComparator implements Comparator<BlogPost> {
-
-		@Override
+	@Override
 		public int compare(BlogPost o1, BlogPost o2) {
 			return o2.getCreated().compareTo(o1.getCreated());
 		}

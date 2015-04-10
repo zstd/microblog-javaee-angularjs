@@ -1,0 +1,20 @@
+[
+  {
+    "message": "Some message at index #2",
+    "creatorName": "USER",
+    "postedTimeRaw": 1355259600002,
+    "postedTime": "12/12/2012 12:00",
+    "id": 2,
+    "topic": ["topic-2"],
+    "mentions": ["mention-2"]
+  },
+  {
+    "message": "Some message at index #1",
+    "creatorName": "USER",
+    "postedTimeRaw": 1355259600001,
+    "postedTime": "12/12/2012 12:00",
+    "id": 1,
+    "topic": ["topic-1"],
+    "mentions": ["mention-1"]
+  }
+]
