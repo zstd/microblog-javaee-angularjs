@@ -62,18 +62,5 @@ public class JdbcBlogPostRepo extends BasicJdbcRepo implements BlogPostRepo {
 			}
 		}.executeWithResult();
 	}
-	
-	public static void main(String arg[]) throws SQLException {
-		JdbcBlogPostRepo repo = new JdbcBlogPostRepo();
-		
-		BlogPost post = new BlogPost(null,"bob","message of @bob in #topic1 is here","topic1","bob",null);
-		repo.save(post);
-		
-		System.out.println(repo.listAll());
-		
-		
-	}
-
-
 
 }
