@@ -18,7 +18,7 @@ public class JdbcBlogPostRepo extends BasicJdbcRepo implements BlogPostRepo {
 			"INSERT INTO " + TABLE_NAME +" (" + Joiner.on(",").join(BlogPost.DB_FIELDS) + ") VALUES (?,?,?,?,?,?)";
 	
 	private static final String SELECT_ALL_QUERY = 
-			"SELECT " + Joiner.on(",").join(", ", BlogPost.DB_FIELDS) +" FROM " + TABLE_NAME;
+			"SELECT " + Joiner.on(",").join(BlogPost.DB_FIELDS) +" FROM " + TABLE_NAME;
 	
 	private static final String SEQ_NAME = "posts_seq";
 

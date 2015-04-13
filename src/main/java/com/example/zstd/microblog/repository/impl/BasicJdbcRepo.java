@@ -1,6 +1,8 @@
 package com.example.zstd.microblog.repository.impl;
 
+import com.example.zstd.microblog.conf.AppConfig;
 import com.example.zstd.microblog.exception.RepositoryException;
+import com.example.zstd.microblog.service.ServiceLocator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +14,9 @@ public class BasicJdbcRepo {
 	
 	public BasicJdbcRepo() {
 		try {
+            /**
+             * Assuming that app works only on Derby.
+             */
 			Class.forName("org.apache.derby.jdbc.ClientDriver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -20,7 +25,9 @@ public class BasicJdbcRepo {
 	}
 	
 	protected Connection getConnection(){
-		String connectionUrl = "jdbc:derby://localhost:1527/microblogging;create=true";
+		//String connectionUrl = "jdbc:derby://localhost:1527/microblogging;create=true";
+        String connectionUrl = ServiceLocator.getInstance().getService(AppConfig.class).
+                getStringParam(AppConfig.Param.JDBC_URL);
         try {
             return DriverManager.getConnection(connectionUrl);
         } catch (SQLException e) {
