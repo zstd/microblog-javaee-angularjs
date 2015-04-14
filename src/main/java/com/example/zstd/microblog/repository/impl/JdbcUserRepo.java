@@ -64,26 +64,6 @@ public class JdbcUserRepo extends BasicJdbcRepo implements UserRepo {
 		return users;		
 	}
 
-	public static void main(String arg[]) throws SQLException {
-		JdbcUserRepo repo = new JdbcUserRepo();
-//		List<BlogUser> users = repo.findByField(BlogUser.DB_FIELD_USERNAME, "bob");
-//		System.out.println("found user -->" + users);
-//		if(!users.isEmpty()) {
-//			BlogUser user = users.get(0);
-//			BlogUser user2 = new BlogUser();
-//			String prefix = System.currentTimeMillis() + "";
-//			user2.setUsername(user.getUsername() + prefix);
-//			user2.setPassword(user.getPassword() + prefix);
-//			user2.setNickname(user.getNickname() + prefix);
-//			user2.setDescription(user.getDescription());
-//			user2.setPhotoUrl(user.getPhotoUrl() + prefix);
-//			repo.save(user2);
-//		}
-//		users = repo.findByField(BlogUser.DB_FIELD_USERNAME, "bob");
-//		System.out.println("found user -->" + users);
-		System.out.println("repo -->" + repo.getUserFollowingData());
-	}
-
 	@Override
 	public Map<String, Long> getUserFollowingData(){
 		return (Map<String, Long>) new JdbcWorker(getConnection()) {		

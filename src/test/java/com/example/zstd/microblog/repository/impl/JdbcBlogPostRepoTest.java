@@ -6,12 +6,15 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.example.zstd.microblog.model.UserBuilder.anUser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class JdbcBlogPostRepoTest extends JdbcRepoTestBase {
+
+    private static final Logger LOG = Logger.getLogger(JdbcRepoTestBase.class.getName());
 
     private JdbcBlogPostRepo blogPostRepo;
 
@@ -23,6 +26,7 @@ public class JdbcBlogPostRepoTest extends JdbcRepoTestBase {
 
     @Test
     public void testCreateAndList() throws Exception {
+        LOG.info("testCreateAndList");
         User user = givenUserExists(anUser().withUsername("alice").withPassword("alice-pass").withNickname("Alicia"));
         List<BlogPost> posts = blogPostRepo.listAll();
         assertTrue(posts.isEmpty());

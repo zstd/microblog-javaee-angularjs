@@ -42,6 +42,11 @@ public abstract class JdbcRepoTestBase {
      * @param jdbcUrl
      */
     private void populateDB(String jdbcUrl) {
+        LOG.info("populateDB: " + jdbcUrl);
+        if(jdbcUrl == null) {
+            LOG.warning("JDBC url provided is null, skipping");
+            return;
+        }
         Flyway flyway = new Flyway();
         flyway.setDataSource(jdbcUrl, (String) null, (String) null);
         flyway.setLocations("classpath:db");
@@ -50,12 +55,19 @@ public abstract class JdbcRepoTestBase {
 
     private String initDerbyDB() throws SQLException {
         // setting location of database files to temporary folder so database automatically cleaned
-        System.setProperty("derby.system.home",temporaryFolder.getRoot().getAbsolutePath());
+        try {
+            String dbLocation = temporaryFolder.getRoot().getAbsolutePath();
+            LOG.info("db location " + dbLocation);
+            System.setProperty("derby.system.home",dbLocation);
 
-        String jdbcUrl = ServiceLocator.getInstance().getService(AppConfig.class) .
-                getStringParam(AppConfig.Param.JDBC_URL);
-        DriverManager.getConnection(jdbcUrl);
-        return jdbcUrl;
+            String jdbcUrl = ServiceLocator.getInstance().getService(AppConfig.class) .
+                    getStringParam(AppConfig.Param.JDBC_URL);
+            DriverManager.getConnection(jdbcUrl);
+            return jdbcUrl;
+        } catch(Throwable t) {
+            LOG.log(Level.SEVERE,"failed to load derby driver",t);
+        }
+        return null;
     }
 
     protected abstract void setUpRepos();
@@ -69,8 +81,9 @@ public abstract class JdbcRepoTestBase {
 
     @After
     public void tearDown() throws Exception {
+        LOG.info("tearDown");
         try {
-            DriverManager.getConnection("jdbc:derby:;shutdown=true");
+            DriverManager.getConnection("jdbc:derby:microblogging;shutdown=true");
         } catch(SQLException se) {
             if (((se.getErrorCode() == 50000) && ("XJ015".equals(se.getSQLState()) ))) {
                 // we got the expected exception

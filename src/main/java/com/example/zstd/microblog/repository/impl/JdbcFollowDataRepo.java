@@ -7,8 +7,11 @@ import com.google.common.base.Joiner;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class JdbcFollowDataRepo extends BasicJdbcRepo implements FollowDataRepo {
+
+    private static final Logger LOG = Logger.getLogger(BasicJdbcRepo.class.getName());
 	
 	private static final String TABLE_NAME = "follow_data";
 	private static final String SEQ_NAME = "follow_data_seq";
@@ -17,7 +20,7 @@ public class JdbcFollowDataRepo extends BasicJdbcRepo implements FollowDataRepo 
 			"SELECT " + Joiner.on(",").join(FollowData.DB_FIELDS) + " FROM " + TABLE_NAME +" WHERE %s = ?";
 	
 	private static final String SAVE_QUERY = 
-			"INSERT INTO "+ TABLE_NAME + " (" + Joiner.on(",").join(", ", FollowData.DB_FIELDS) + ") "
+			"INSERT INTO "+ TABLE_NAME + " (" + Joiner.on(",").join(FollowData.DB_FIELDS) + ") "
 					+ "VALUES (?,?,?)";
 	
 	private static final String DELETE_QUERY = 
@@ -71,7 +74,7 @@ public class JdbcFollowDataRepo extends BasicJdbcRepo implements FollowDataRepo 
 		return (int) new JdbcWorker(getConnection()) {			
 			@Override
 			protected Object doWork() throws SQLException {
-				System.out.println(DELETE_QUERY);
+				LOG.finest(DELETE_QUERY);
 				ps = connection.prepareStatement(DELETE_QUERY);
 				int index = 1;
 				ps.setString(index++, follower);
@@ -82,21 +85,5 @@ public class JdbcFollowDataRepo extends BasicJdbcRepo implements FollowDataRepo 
 			}
 		}.executeWithResult();
 	}
-
-	public static void main(String arg[]) throws SQLException {
-		JdbcFollowDataRepo repo = new JdbcFollowDataRepo();
-		FollowData data = new FollowData(null, "user1", "user2");
-		FollowData saved = repo.save(data);
-		System.out.println("saved " + saved);
-		
-		
-		List<FollowData> users = repo.findByField(FollowData.DB_FIELD_FOLLOWER, "user1");
-		System.out.println("found user -->" + users);
-		repo.delete(users.get(0).getFollower(),users.get(0).getFollowing());	
-		users = repo.findByField(FollowData.DB_FIELD_FOLLOWER, "user1");
-		System.out.println("found user -->" + users);
-	}
-
-	
 
 }
