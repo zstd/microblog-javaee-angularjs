@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class JdbcUserRepo extends BasicJdbcRepo implements UserRepo {
+
+    private static final Logger LOG = Logger.getLogger(JdbcUserRepo.class.getName());
 	
 	private static final String FIND_BY_FIELD_QUERY = 
 			"SELECT " + Joiner.on(",").join(User.DB_FIELDS) + " FROM users WHERE %s = ?";
@@ -37,7 +40,7 @@ public class JdbcUserRepo extends BasicJdbcRepo implements UserRepo {
 				return updated;
 			}
 		}.executeWithResult();
-		System.out.println("rows updated " + rowsUpdated);
+		LOG.fine("rows updated " + rowsUpdated);
 	}
 	
 	@Override

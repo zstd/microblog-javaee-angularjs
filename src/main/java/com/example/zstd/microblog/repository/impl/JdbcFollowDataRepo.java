@@ -32,7 +32,7 @@ public class JdbcFollowDataRepo extends BasicJdbcRepo implements FollowDataRepo 
 		return (FollowData) new JdbcWorker(getConnection()) {			
 			@Override
 			protected Object doWork() throws SQLException {
-				System.out.println(SAVE_QUERY);
+				LOG.finest(SAVE_QUERY);
 				Long id = getNextSequenceVal(SEQ_NAME, connection);
 				ps = connection.prepareStatement(SAVE_QUERY);
 				int index = 1;

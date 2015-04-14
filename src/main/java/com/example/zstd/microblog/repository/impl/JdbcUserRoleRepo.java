@@ -3,8 +3,11 @@ package com.example.zstd.microblog.repository.impl;
 import com.example.zstd.microblog.repository.UserRoleRepo;
 
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class JdbcUserRoleRepo extends BasicJdbcRepo implements UserRoleRepo {
+
+    private static final Logger LOG = Logger.getLogger(JdbcUserRepo.class.getName());
 	
 	private static final String SAVE_QUERY = 
 			"INSERT INTO user_roles (user_name,role_name) VALUES (?,?)";
@@ -22,13 +25,7 @@ public class JdbcUserRoleRepo extends BasicJdbcRepo implements UserRoleRepo {
 				return updated;
 			}
 		}.executeWithResult();
-		System.out.println("rows updated " + rowsUpdated);
-	}
-
-	public static void main(String arg[]) throws SQLException {
-		JdbcUserRoleRepo repo = new JdbcUserRoleRepo();
-		
-		repo.add("test2","CHAT_USER");		
+		LOG.fine("rows updated " + rowsUpdated);
 	}
 
 }
