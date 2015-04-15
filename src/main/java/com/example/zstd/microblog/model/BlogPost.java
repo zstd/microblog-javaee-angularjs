@@ -53,12 +53,7 @@ public class BlogPost {
 
 	public BlogPost(String creator, String message, String topics,
 			String mentions) {
-		super();
-		this.creator = creator;
-		this.message = message;
-		this.topics = topics;
-		this.mentions = mentions;
-		this.created = new Date();
+		this(null,creator,message,topics,mentions,new Date());
 	}
 	
 	public String getTopics() {
