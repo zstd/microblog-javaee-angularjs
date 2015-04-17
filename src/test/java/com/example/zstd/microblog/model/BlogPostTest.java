@@ -14,6 +14,6 @@ public class BlogPostTest {
 
     @Test
     public void testCreatePriorityComparator() throws Exception {
-        
+
     }
 }
