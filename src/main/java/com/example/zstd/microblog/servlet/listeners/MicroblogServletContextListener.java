@@ -3,6 +3,7 @@ package com.example.zstd.microblog.servlet.listeners;
 import com.example.zstd.microblog.conf.AppConfig;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
+import com.example.zstd.microblog.service.BlogPostService;
 import com.example.zstd.microblog.service.ServiceLocator;
 import com.google.common.collect.ImmutableMap;
 
@@ -21,7 +22,8 @@ public class MicroblogServletContextListener implements ServletContextListener {
         LOG.info("Starting initialization for microblog app");
         ServiceLocator.initialize(ImmutableMap.<Class, Object>
                 of(UserRepo.class, new JdbcUserRepo(),
-                   AppConfig.class, AppConfig.createAppConfig()
+                   AppConfig.class, AppConfig.createAppConfig(),
+                    BlogPostService.class, new BlogPostService()
                 )
         );
     }

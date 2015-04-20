@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 /**
  * Servlet implementation class LoginServlet
  */
-@WebServlet(urlPatterns = {"/rest/posts/*"})
+@WebServlet(urlPatterns = {"/rest/posts/*","/rest/posts"})
 public class PostsServlet extends HttpServlet {
 	
 	private static final Long ONE_SECOND_MILLIS = TimeUnit.SECONDS.toMillis(1);
