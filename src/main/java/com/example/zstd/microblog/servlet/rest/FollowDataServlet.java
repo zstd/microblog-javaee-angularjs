@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 /**
  * Servlet for providing data about following-followers via REST.
  */
-@WebServlet(urlPatterns = {"/rest/followdata/*"})
+@WebServlet(urlPatterns = {"/rest/follow-data/*"})
 public class FollowDataServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(UsersServlet.class.getName());
@@ -38,7 +38,7 @@ public class FollowDataServlet extends HttpServlet {
 
     private FollowDataService followDataService =
             ServiceLocator.getInstance().getService(FollowDataService.class);
-	
+
     public FollowDataServlet() {
         super();        
     }

@@ -30,7 +30,7 @@ app.controller('UserFeedCtrl', function($scope, $http, Feed,FollowData) {
     return arr;
   }
   
-  $http.get('/blog/rest/users/user-info?user='+username).
+  $http.get(MicroblogApp.Config.contextPath + '/rest/users/user-info?user='+username).
 	  success(function(result, status, headers, config) {
 	  	console.log('loaded user-info ' + result);
 	  	updateUserDetails(result);

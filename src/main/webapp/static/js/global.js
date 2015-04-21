@@ -105,7 +105,7 @@ app.factory('FollowData', function($rootScope,$http) {
 	FollowData.prototype.submitUnfollowAction = function(followUser) {
 		var followData = this;
 	      console.log('submitUnfollowAction: for user ' + followUser);
-	      $http.delete('/blog/rest/follow-data?follower='+this.username + "&following="+followUser).
+	      $http.delete(MicroblogApp.Config.contextPath + '/rest/follow-data?follower='+this.username + "&following="+followUser).
 			  success(function(result, status, headers, config) {
 				  removeFromArray(followData.followedByCurrentUser,followUser);
 		          //$scope.switchFeeds($scope.feedName);
@@ -121,7 +121,7 @@ app.factory('FollowData', function($rootScope,$http) {
 	FollowData.prototype.submitFollowAction = function(followUser) {
 		var followData = this;
 	      console.log('submitFollowAction: for user ' + followUser);
-	      $http.post('/blog/rest/follow-data',{follower : this.username, following : followUser}).
+	      $http.post(MicroblogApp.Config.contextPath +'/rest/follow-data',{follower : this.username, following : followUser}).
 			  success(function(result, status, headers, config) {
 				  followData.followedByCurrentUser.push({recordId : result.id, username: result.following });
 		          //$scope.switchFeeds($scope.feedName);
@@ -183,7 +183,7 @@ app.factory('FollowData', function($rootScope,$http) {
 	
 	FollowData.prototype.loadFollowersOfCurrentUser = function() {
 		var followData = this;  
-		$http.get('/blog/rest/follow-data?following='+this.username).
+		$http.get(MicroblogApp.Config.contextPath +'/rest/follow-data?following='+this.username).
 		    success(function(resultIn, status, headers, config) {
 		    	  //console.log('load d from server ' + resultIn);
 		          var followingUsers = [];
@@ -200,7 +200,7 @@ app.factory('FollowData', function($rootScope,$http) {
 
 	FollowData.prototype.loadFollowedByCurrentUser = function() {
 		  var followData = this;  
-		  $http.get('/blog/rest/follow-data?follower='+this.username).
+		  $http.get(MicroblogApp.Config.contextPath +'/rest/follow-data?follower='+this.username).
 		    success(function(resultIn, status, headers, config) {
 		    	// console.log('loaded from server ' + resultIn);
 		          var followingUsers = [];
