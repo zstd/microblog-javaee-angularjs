@@ -8,11 +8,13 @@ import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
 import com.example.zstd.microblog.service.BlogPostService;
 import com.example.zstd.microblog.service.FollowDataService;
 import com.example.zstd.microblog.service.ServiceLocator;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @WebListener
@@ -23,24 +25,28 @@ public class MicroblogServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         LOG.info("Starting initialization for microblog app");
-
         try {
             initializeApp();
         } catch(Throwable t) {
-            t.printStackTrace();
+            LOG.log(Level.SEVERE,"Failed to initializeApp",t);
+            throw t;
         }
-
     }
 
     private void initializeApp() {
-        ServiceLocator.initialize(ImmutableMap.<Class, Object>
-                        of(UserRepo.class, new JdbcUserRepo(),
-                        FollowDataRepo.class, new JdbcFollowDataRepo(),
-                        AppConfig.class, AppConfig.createAppConfig(),
-                        BlogPostService.class, new BlogPostService(),
-                        FollowDataService.class, new FollowDataService()
-                )
-        );
+        ImmutableMap.Builder<Class,Object> builder = new ImmutableBiMap.Builder<>();
+        // app config
+        builder.
+                put(AppConfig.class, AppConfig.createAppConfig());
+        // adding repos
+        builder.
+                put(UserRepo.class, new JdbcUserRepo()).
+                put(FollowDataRepo.class, new JdbcFollowDataRepo());
+        // adding services
+        builder.
+                put(BlogPostService.class, new BlogPostService()).
+                put(FollowDataService.class, new FollowDataService());
+        ServiceLocator.initialize(builder.build());
     }
 
     @Override

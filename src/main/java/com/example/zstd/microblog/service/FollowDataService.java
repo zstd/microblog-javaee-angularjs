@@ -9,15 +9,13 @@ import java.util.List;
 
 public class FollowDataService {
 	
-	private FollowDataRepo repo = ServiceLocator.getInstance().getService(FollowDataRepo.class);
-	
 	public List<FollowData> getFollowerData(String username) {
-        return repo.findByField("follower", username);
+        return followDataRepo().findByField("follower", username);
 
     }
 	
 	public List<FollowData> getFollowingData(String username) {
-        return repo.findByField("following", username);
+        return followDataRepo().findByField("following", username);
     }
 	
 	public FollowData addFollowerData(String follower,String following) {
@@ -28,7 +26,7 @@ public class FollowDataService {
 		ValidationUtils.checkArgument(
 				follower.equalsIgnoreCase(following), new IllegalArgumentException("Follower is null or empty"));
 
-        return repo.save(new FollowData(follower,following));
+        return followDataRepo().save(new FollowData(follower, following));
     }
 	
 	public boolean deleteFollowerData(String follower,String following) {
@@ -37,6 +35,10 @@ public class FollowDataService {
 		ValidationUtils.checkArgument(
 				StringUtils.isNullOrEmpty(following), new IllegalArgumentException("Following is null or empty"));
 
-        return repo.delete(follower,following) > 0;
+        return followDataRepo().delete(follower,following) > 0;
+    }
+
+    private FollowDataRepo followDataRepo() {
+        return ServiceLocator.getInstance().getService(FollowDataRepo.class);
     }
 }
