@@ -44,7 +44,7 @@ app.controller('FeedCtrl', function($scope,$rootScope, $http, Feed,FollowData) {
   
   $scope.submit = function(newPost) {
 	    
-	  $http.post('/blog/rest/posts',newPost).
+	  $http.post(MicroblogApp.Config.contextPath + '/rest/posts',newPost).
 	    success(function(result, status, headers, config) {
 	    	$scope.newPost = '';
 	    	allFeed.refresh();

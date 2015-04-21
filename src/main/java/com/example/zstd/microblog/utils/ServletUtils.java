@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ServletUtils {
 
     public static final int METHOD_NOT_ALLOWED = 405;
+    public static final int NOT_FOUND = 404;
 
     public enum Method {
         POST,GET,PUT,DELETE,PATCH

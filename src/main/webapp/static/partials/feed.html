@@ -2,7 +2,8 @@
   <div class="post" ng-repeat="post in feed.posts">
     <div class="header">    	
 	    <span class="author">
-	    	<a ng-href="/blog/app/user?user={{post.creatorName}}">@{{post.creatorName}}</a>
+            <!-- TODO: how to add context path here? -->
+	    	<a ng-href="/microblog/app/route?user={{post.creatorName}}">@{{post.creatorName}}</a>
 	    </span>
 	    <span class="controls">
 	    	<button type="button" class="btn btn-xs btn-success" 
@@ -32,4 +33,3 @@
 	
   </div>
 </div>
-  <!-- <button class="btn btn-link load-more-btn" ng-show="feed.moreToLoad" ng-click="feed.loadPosts()">Show more</button> -->
