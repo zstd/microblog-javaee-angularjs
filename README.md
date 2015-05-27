@@ -20,3 +20,4 @@ Sample playground repository for exploring the features of AngularJS framework a
 
 ## TODO
 - Get to know how to use only parts of guava lib (utils,collections) to lighten the war
+- Returning static resources with caching (ETag, If-Modified-Since)
