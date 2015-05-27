@@ -21,7 +21,8 @@ public class RouteServlet extends HttpServlet{
 	private static final Logger LOG = Logger.getLogger(RegistrationServlet.class.getName());
 
     private static final Map<String,String> ROUTES = ImmutableMap.of(
-            "user","/WEB-INF/pages/user_profile.jsp?user="
+            "user","/WEB-INF/pages/user_profile.jsp?user=",
+            "topic","/WEB-INF/pages/topic.jsp?topic="
     );
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

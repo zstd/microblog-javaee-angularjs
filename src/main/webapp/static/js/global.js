@@ -233,7 +233,9 @@ app.directive('dpdMessageFor', function() {
     var topics = post.topic; 
     if (topics) {
       topics.forEach(function(m) {
-        message = message.replace('#' + m, '<a class="topic" href="/blog/app/topic?topic=' + m + '">#' + m + '</a>');
+        message = message.replace('#' + m, '<a class="topic" ' +
+                                            'href="'+ MicroblogApp.Config.contextPath+ '/app/route?topic=' + m +
+                                            '">#' + m + '</a>');
       });
     }
 
