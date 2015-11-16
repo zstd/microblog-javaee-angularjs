@@ -19,10 +19,10 @@ public class BasicJdbcRepo {
 	
 	public BasicJdbcRepo() {
 		try {
-            /**
-             * Assuming that app works only on Derby.
-             */
-			Class.forName("org.apache.derby.jdbc.ClientDriver");
+			String driver = ServiceLocator.getInstance().getService(AppConfig.class).
+					getStringParam(AppConfig.Param.JDBC_DRIVER);
+			LOG.info("Using JDBC driver: " + driver);
+			Class.forName(driver);
 		} catch (ClassNotFoundException e) {
 			LOG.log(Level.SEVERE,"Failed to load JDBC driver class",e);
 			throw new InstantiationError("Failed to load JDBC driver");

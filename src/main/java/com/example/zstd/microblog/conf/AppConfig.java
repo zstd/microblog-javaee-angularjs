@@ -49,7 +49,8 @@ public final class AppConfig {
     }
 
     public enum Param {
-        JDBC_URL("jdbc.url",true);
+        JDBC_URL("jdbc.url",true),
+        JDBC_DRIVER("jdbc.driver",true);
 
         private boolean required;
         private String propValue;
