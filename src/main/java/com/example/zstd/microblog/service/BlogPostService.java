@@ -6,22 +6,25 @@ import com.example.zstd.microblog.model.User;
 import com.example.zstd.microblog.repository.BlogPostRepo;
 import com.example.zstd.microblog.repository.FollowDataRepo;
 import com.example.zstd.microblog.repository.UserRepo;
-import com.example.zstd.microblog.repository.impl.JdbcBlogPostRepo;
 import com.example.zstd.microblog.repository.impl.JdbcFollowDataRepo;
 import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
 import com.example.zstd.microblog.utils.StringUtils;
 import com.example.zstd.microblog.utils.ValidationUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class BlogPostService {
 	
 	private static final int DISCOVER_LIST_SIZE = 10;
 	
-	private BlogPostRepo blogRepo = new JdbcBlogPostRepo();
 	private UserRepo userRepo = new JdbcUserRepo();
 	private FollowDataRepo followDataRepo = new JdbcFollowDataRepo();
+
+    private BlogPostRepo blogPostRepo() {
+        return ServiceLocator.getInstance().getService(BlogPostRepo.class);
+    }
 	
 	public BlogPost save(String username,String message) {
 		ValidationUtils.checkArgument(
@@ -40,12 +43,12 @@ public class BlogPostService {
 				StringUtils.join(",", topics.toArray(new String[0])),
 				StringUtils.join(",", mentions.toArray(new String[0])));
 
-        return blogRepo.save(toSave);
+        return blogPostRepo().save(toSave);
     }
 	
 	public List<BlogPost> getList(String usernameToExclude) {
 		List<BlogPost> posts;
-        posts = blogRepo.listAll();
+        posts = blogPostRepo().listAll();
         return posts;
 
     }
@@ -63,13 +66,9 @@ public class BlogPostService {
 	
 	public List<BlogPost> getListForUser(String user) {
 		List<BlogPost> posts = getList();
-		List<BlogPost> result = new ArrayList();
-		for(BlogPost post : posts) {
-			if(post.getCreator().equals(user)) {
-				result.add(post);
-			}
-		}
-		return result;		
+		return posts.stream()
+				.filter(p -> p.getCreator().equals(user))
+				.collect(Collectors.toList());
 	}
 	
 	public List<BlogPost> getListOfOtherUser(String user) {
@@ -85,7 +84,7 @@ public class BlogPostService {
 	
 	public List<BlogPost> getList() {
 		List<BlogPost> posts;
-        posts = blogRepo.listAll();
+        posts = blogPostRepo().listAll();
         return posts;
 
     }
