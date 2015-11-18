@@ -7,24 +7,29 @@ import com.example.zstd.microblog.repository.BlogPostRepo;
 import com.example.zstd.microblog.repository.FollowDataRepo;
 import com.example.zstd.microblog.repository.UserRepo;
 import com.example.zstd.microblog.repository.impl.JdbcFollowDataRepo;
-import com.example.zstd.microblog.repository.impl.JdbcUserRepo;
 import com.example.zstd.microblog.utils.StringUtils;
 import com.example.zstd.microblog.utils.ValidationUtils;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 public class BlogPostService {
 	
 	private static final int DISCOVER_LIST_SIZE = 10;
+
+	private static final Logger LOG = Logger.getLogger(BlogPostService.class.getName());
 	
-	private UserRepo userRepo = new JdbcUserRepo();
 	private FollowDataRepo followDataRepo = new JdbcFollowDataRepo();
 
     private BlogPostRepo blogPostRepo() {
         return ServiceLocator.getInstance().getService(BlogPostRepo.class);
     }
+
+	private UserRepo userRepo() {
+		return ServiceLocator.getInstance().getService(UserRepo.class);
+	}
 	
 	public BlogPost save(String username,String message) {
 		ValidationUtils.checkArgument(
@@ -114,13 +119,13 @@ public class BlogPostService {
 	}
 
 	private boolean isValidUsername(String username) {
-        return !userRepo.findByField(User.DB_FIELD_USERNAME, username).isEmpty();
+        return !userRepo().findByField(User.DB_FIELD_USERNAME, username).isEmpty();
     }
 
 	public List<BlogPost> discoverMessagesForUser(String name) {
 		List<BlogPost> data = getListOfOtherUser(name);
 		Map<String, Long> followingData;
-        followingData = userRepo.getUserFollowingData();
+        followingData = userRepo().getUserFollowingData();
         Comparator<BlogPost> comparator = BlogPost.createPriorityComparator(followingData);
 		Collections.sort(data,comparator);
 		if(data.size() > DISCOVER_LIST_SIZE) {
@@ -131,15 +136,11 @@ public class BlogPostService {
 
 	public List<BlogPost> getMessagesOfUserFollowers(String name) {
 		List<String> followers = getFollowersNames(name);
-		System.out.println(name + " followers " + followers);
+		LOG.info(name + " followers " + followers);
 		List<BlogPost> allPosts = getList();
-		List<BlogPost> result = new ArrayList();
-		for(BlogPost post : allPosts) {
-			if(followers.contains(post.getCreator())) {
-				result.add(post);
-			}
-		}
-		return result;			
+		return allPosts.stream()
+				.filter(p -> followers.contains(p.getCreator()))
+				.collect(Collectors.toList());
 	}
 
 	private List<String> getFollowersNames(String name) {
