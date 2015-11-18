@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class BlogPostService {
 	
 	private static final int DISCOVER_LIST_SIZE = 10;
-    public static final String TOPIC_PREFIX = "@";
+    public static final String MENTION_PREFIX = "@";
 
 	private static final Logger LOG = Logger.getLogger(BlogPostService.class.getName());
 	
@@ -107,8 +107,8 @@ public class BlogPostService {
 	
 	private List<String> extractMentions(String[] tokens) {
         return Arrays.stream(tokens)
-                .filter(t -> t.startsWith(TOPIC_PREFIX))
-                .map(t -> t.replaceAll(TOPIC_PREFIX,""))
+                .filter(t -> t.startsWith(MENTION_PREFIX))
+                .map(t -> t.replaceAll(MENTION_PREFIX,""))
                 .filter(this::isValidUsername)
                 .collect(Collectors.toList());
 	}
