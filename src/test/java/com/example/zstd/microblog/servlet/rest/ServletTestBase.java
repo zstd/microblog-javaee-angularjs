@@ -4,15 +4,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import org.junit.Before;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
@@ -38,12 +35,9 @@ public class ServletTestBase {
         response = mock(HttpServletResponse.class);
 
         when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
-        doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                responseStatusCode = (Integer) invocation.getArguments()[0];
-                return null;
-            }
+        doAnswer(invocation -> {
+            responseStatusCode = (Integer) invocation.getArguments()[0];
+            return null;
         }).when(response).setStatus(anyInt());
 
         doSetUp();
@@ -58,35 +52,21 @@ public class ServletTestBase {
 
     protected void givenRequestContainsParameters(final Map<String,String[]> map) {
         when(request.getParameterMap()).thenReturn(map);
-        when(request.getParameter(anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                String paramValue[] = map.get(invocation.getArguments()[0]);
-                return paramValue != null ? paramValue[0] : null;
-            }
+        when(request.getParameter(anyString())).thenAnswer(invocation -> {
+            String paramValue[] = map.get(invocation.getArguments()[0]);
+            return paramValue != null ? paramValue[0] : null;
         });
     }
 
     protected void givenRequestContainsPayload(final InputStream inputStream) throws IOException {
         when(request.getReader()).thenReturn(new BufferedReader(new InputStreamReader(inputStream)));
-
-        //when(request.getInputStream()).thenReturn(inputStream);
     }
 
 
     protected void givenRequestContainsUserWithRoles(final String name, final String...roles) {
-        when(request.getUserPrincipal()).thenReturn(new Principal() {
-            @Override
-            public String getName() {
-                return name;
-            }
-        });
-        when(request.isUserInRole(anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return Arrays.asList(roles).contains(invocation.getArguments()[0]);
-            }
-        });
+        when(request.getUserPrincipal()).thenReturn(() -> name);
+        when(request.isUserInRole(anyString()))
+                .thenAnswer(invocation -> Arrays.asList(roles).contains(invocation.getArguments()[0]));
     }
 
     protected String fileContentAsString(String pathToFile) {

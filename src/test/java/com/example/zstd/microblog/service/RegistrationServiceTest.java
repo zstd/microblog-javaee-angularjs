@@ -16,9 +16,8 @@ import org.junit.rules.ExpectedException;
 import java.util.Collections;
 
 import static com.example.zstd.microblog.dto.RegistrationDataBuilder.aRegistrationData;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -60,26 +59,26 @@ public class RegistrationServiceTest {
         thenRepositoriesCalled();
     }
 
-    @Test(expected = RegistrationException.class)
+    @Test
     public void testCreateFailOnUserSave() throws Exception {
         RegistrationData data = givenRegistrationData(aRegistrationData().withUsername(USERNAME).withNickname(NICKNAME));
         givenUserRepoError();
 
-        whenCreateNewUser(data);
+        expectedException.expect(RegistrationException.class);
+        expectedException.expectMessage(org.hamcrest.core.StringStartsWith.startsWith("Failed to save/create user"));
 
-        expectedException.expect(instanceOf(RegistrationException.class));
-        expectedException.expectMessage(endsWith("already exists"));
+        whenCreateNewUser(data);
     }
 
-    @Test(expected = RegistrationException.class)
+    @Test
     public void testCreateFailOnDuplicateUsername() throws Exception {
         RegistrationData data = givenRegistrationData(aRegistrationData().withUsername(USERNAME).withNickname(NICKNAME));
         givenUserWithFieldExists(User.DB_FIELD_USERNAME,USERNAME);
 
+        expectedException.expect(RegistrationException.class);
+        expectedException.expectMessage("Blog user with username 'any-user-name' already exists");
+
         whenCreateNewUser(data);
-        // TODO research this
-        expectedException.expect(instanceOf(RegistrationException.class));
-        expectedException.expectMessage(endsWith("already exi2222sts"));
     }
 
     private void givenUserRepoError() {
@@ -97,7 +96,7 @@ public class RegistrationServiceTest {
     }
 
     private void thenNoException() {
-        //assertEquals(expectedException,ExpectedException.none());
+        assertEquals(expectedException,ExpectedException.none());
     }
 
     private void whenCreateNewUser(RegistrationData data) {
