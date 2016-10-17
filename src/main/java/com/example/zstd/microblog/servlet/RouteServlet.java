@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -20,21 +21,28 @@ public class RouteServlet extends HttpServlet{
 	
 	private static final Logger LOG = Logger.getLogger(RegistrationServlet.class.getName());
 
+    static final String PARAM_USER = "user";
+    static final String PARAM_TOPIC = "topic";
+
+    static final String ROUTE_USER = "/WEB-INF/pages/user_profile.jsp?user=";
+    static final String ROUTE_TOPIC = "/WEB-INF/pages/topic.jsp?topic=";
+
     private static final Map<String,String> ROUTES = ImmutableMap.of(
-            "user","/WEB-INF/pages/user_profile.jsp?user=",
-            "topic","/WEB-INF/pages/topic.jsp?topic="
+            PARAM_USER, ROUTE_USER,
+            PARAM_TOPIC, ROUTE_TOPIC
     );
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LOG.info("doGet: " + request.getParameterMap());
-        for (String key : ROUTES.keySet()) {
-            String value = request.getParameter(key);
-            if(value != null) {
-                request.getRequestDispatcher(ROUTES.get(key) + value).forward(request, response);
-                return;
-            }
+		LOG.info("doGet: {}" + request.getParameterMap());
+        Optional<String> routeKey = ROUTES.keySet().stream()
+                .filter(r -> request.getParameter(r) != null)
+                .findFirst();
+        if(routeKey.isPresent()) {
+            request.getRequestDispatcher(ROUTES.get(routeKey.get()) + request.getParameter(routeKey.get()))
+                    .forward(request, response);
+        } else {
+            response.setStatus(ServletUtils.NOT_FOUND);
         }
-        response.setStatus(ServletUtils.NOT_FOUND);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

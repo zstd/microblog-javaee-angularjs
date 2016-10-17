@@ -16,7 +16,6 @@ import org.junit.rules.ExpectedException;
 import java.util.Collections;
 
 import static com.example.zstd.microblog.dto.RegistrationDataBuilder.aRegistrationData;
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -55,7 +54,6 @@ public class RegistrationServiceTest {
 
         whenCreateNewUser(data);
 
-        thenNoException();
         thenRepositoriesCalled();
     }
 
@@ -93,10 +91,6 @@ public class RegistrationServiceTest {
     private void thenRepositoriesCalled() {
         verify(userRepo).save(any(User.class));
         verify(userRoleRepo).add(eq(USERNAME),eq(RegistrationService.MAIN_ROLE));
-    }
-
-    private void thenNoException() {
-        assertEquals(expectedException,ExpectedException.none());
     }
 
     private void whenCreateNewUser(RegistrationData data) {

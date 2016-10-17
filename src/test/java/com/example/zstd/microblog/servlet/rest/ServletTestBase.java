@@ -5,6 +5,7 @@ import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import org.junit.Before;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -25,6 +26,7 @@ public class ServletTestBase {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
+    protected RequestDispatcher requestDispatcher;
 
     protected StringWriter stringWriter = new StringWriter();
     protected int responseStatusCode = 0;
@@ -33,8 +35,11 @@ public class ServletTestBase {
     public void setUp() throws Exception {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
+        requestDispatcher = mock(RequestDispatcher.class);
 
         when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+        when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+
         doAnswer(invocation -> {
             responseStatusCode = (Integer) invocation.getArguments()[0];
             return null;
